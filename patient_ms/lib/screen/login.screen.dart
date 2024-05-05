@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 239, 246, 248),
+      backgroundColor: const Color.fromARGB(255, 239, 246, 248),
       body: SafeArea(
         child: LoaderOverlay(
           child: SingleChildScrollView(
@@ -252,7 +252,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Text(
                           "Or",
                           style: TextStyle(
-                              color: Color.fromARGB(255, 129, 123, 123),
+                              color: const Color.fromARGB(255, 129, 123, 123),
                               fontSize: 15 * (screenWidth / 360),
                               fontWeight: FontWeight.w500),
                         ),
@@ -288,7 +288,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                        backgroundColor:
+                            const Color.fromARGB(255, 255, 255, 255),
                         shadowColor: Colors.transparent,
                         fixedSize: Size(
                           screenWidth * 0.5,

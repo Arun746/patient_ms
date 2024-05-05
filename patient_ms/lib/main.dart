@@ -31,6 +31,7 @@ class _MyAppState extends State<MyApp> {
       title: 'Flutter Demo',
       home: const LoginScreen(),
       routes: <String, WidgetBuilder>{
+        '/Login': (BuildContext context) => const LoginScreen(),
         '/Home': (BuildContext context) => const Home(),
         '/SelectUser': (BuildContext context) => const SelectUser(),
         '/Appointment': (BuildContext context) => const Appointment(),
