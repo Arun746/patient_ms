@@ -28,7 +28,8 @@ class _SelectUserState extends State<SelectUser> {
             IconButton(
               icon: const Icon(Icons.logout_sharp),
               onPressed: () {
-                Navigator.pushNamed(context, '/Login');
+                // Navigator.pushNamed(context, '/Login');
+                Navigator.pushReplacementNamed(context, '/Login');
               },
             ),
           ],

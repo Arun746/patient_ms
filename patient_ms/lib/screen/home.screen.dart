@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -25,6 +26,20 @@ class _HomeState extends State<Home> {
     } else if (index == 2) {
       Navigator.pushNamed(context, "/Appointment");
     } else if (index == 3) {}
+  }
+
+  void _alertSnackbar(String message) {
+    final snackBar = SnackBar(
+      backgroundColor: Color.fromARGB(255, 233, 59, 59),
+      duration: Duration(milliseconds: 500),
+      content: Text(
+        message,
+        style: TextStyle(fontSize: 14 * (screenWidth / 360)),
+        textAlign: TextAlign.center,
+      ),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -80,7 +95,9 @@ class _HomeState extends State<Home> {
                               ),
                             ),
                             PopupMenuItem<String>(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.pushNamed(context, '/Appointment');
+                              },
                               child: Row(
                                 children: [
                                   Icon(Icons.calendar_month),
@@ -100,17 +117,23 @@ class _HomeState extends State<Home> {
                               ),
                             ),
                             PopupMenuItem<String>(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context, '/SelectUser', (route) => false);
+                              },
                               child: Row(
                                 children: [
                                   Icon(Icons.switch_account_rounded),
                                   SizedBox(width: screenWidth * 0.04),
-                                  Text('Switch Account'),
+                                  Text('Switch Profile'),
                                 ],
                               ),
                             ),
                             PopupMenuItem<String>(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context, '/Login', (route) => false);
+                              },
                               child: Row(
                                 children: [
                                   Icon(Icons.logout),
@@ -131,10 +154,47 @@ class _HomeState extends State<Home> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Container(
-                height: 150,
+                height: 155,
+                width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Colors.grey,
+                  color: Color.fromARGB(255, 236, 234, 234),
                   borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 8),
+                      child: Text(
+                        'With Just One Click Book Your Appointment And Make Your Checkup Easy',
+                        style: GoogleFonts.merienda(
+                          fontSize: 18,
+                          color: Color.fromARGB(255, 4, 85, 106),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/Appointment');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Color.fromARGB(255, 255, 255, 255),
+                        backgroundColor: Color.fromARGB(255, 4, 85, 106),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                      ),
+                      child: Text(
+                        'Book Now',
+                        style: GoogleFonts.archivo(
+                          fontSize: 15,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
@@ -159,16 +219,62 @@ class _HomeState extends State<Home> {
                   ),
                   itemCount: 4,
                   itemBuilder: (context, index) {
-                    return Card(
-                      elevation: 0,
-                      color: const Color.fromARGB(255, 191, 136, 136),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(screenWidth * 0.03),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(screenWidth * 0.01),
-                        child: Column(
-                          children: [Text('data')],
+                    final dataList = [
+                      {
+                        'image': 'images/medication.png',
+                        'text': 'Medication',
+                        'onTap': () {
+                          _alertSnackbar("This feature will be available soon");
+                        }
+                      },
+                      {
+                        'image': 'images/report.png',
+                        'text': 'Reports',
+                        'onTap': () {
+                          _alertSnackbar("This feature will be available soon");
+                        }
+                      },
+                      {
+                        'image': 'images/vitals.png',
+                        'text': 'Vitals',
+                        'onTap': () {
+                          _alertSnackbar("This feature will be available soon");
+                        }
+                      },
+                      {
+                        'image': 'images/welness.png',
+                        'text': 'Wellness Plan',
+                        'onTap': () {
+                          _alertSnackbar("This feature will be available soon");
+                        }
+                      },
+                    ];
+                    final data = dataList[index];
+                    return InkWell(
+                      onTap: data['onTap'] as VoidCallback,
+                      child: Card(
+                        elevation: 0,
+                        color: Color.fromARGB(255, 237, 234, 234),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(screenWidth * 0.03),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(screenWidth * 0.01),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: screenHeight * 0.17,
+                                child: Image.asset(
+                                  data['image'] as String,
+                                ),
+                              ),
+                              Text(
+                                data['text'] as String,
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
