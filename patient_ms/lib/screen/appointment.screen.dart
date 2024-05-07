@@ -52,7 +52,7 @@ class _AppointmentState extends State<Appointment>
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.grey,
+          backgroundColor: const Color.fromRGBO(24, 97, 121, 0.8),
           automaticallyImplyLeading: false,
           title: Center(
             child: Text(
@@ -189,9 +189,8 @@ class _AppointmentState extends State<Appointment>
         //bottomnavbar
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.grey,
-          iconSize: 25,
-          selectedItemColor: Color.fromARGB(255, 10, 95, 115),
+          backgroundColor: const Color.fromRGBO(24, 97, 121, 0.8),
+          selectedItemColor: Color.fromARGB(255, 6, 245, 221),
           unselectedItemColor: Colors.white,
           showSelectedLabels: true,
           showUnselectedLabels: false,
@@ -222,93 +221,99 @@ class _AppointmentState extends State<Appointment>
 
   Widget _list(int i) {
     return GestureDetector(
-      child: ListTile(
-        title: Container(
-          // height: 100,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(screenWidth * 0.02),
-            boxShadow: [
-              BoxShadow(
-                color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.2),
-                spreadRadius: 1,
-                blurRadius: 4,
-                offset: const Offset(1, 1),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              //image
-              Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Column(
-                  children: [
-                    Container(
-                      height: screenHeight * 0.12,
-                      width: screenWidth * 0.2,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(screenWidth * 0.02),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color.fromARGB(255, 128, 123, 123)
-                                .withOpacity(0.2),
-                            spreadRadius: 1,
-                            blurRadius: 7,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(screenWidth * 0.02),
-                        child: Image.asset('images/profile.png'),
-                      ),
-                    ),
-                  ],
+      child: InkWell(
+        onTap: () {
+          Navigator.pushNamed(context, '/BookAppointment');
+        },
+        child: ListTile(
+          title: Container(
+            // height: 100,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(screenWidth * 0.02),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 4,
+                  offset: const Offset(1, 1),
                 ),
-              ),
-              //
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Dr. Doctor Name',
-                      style: TextStyle(
-                          color: Color.fromARGB(255, 3, 58, 80),
-                          fontSize: 16 * (screenWidth / 360)),
-                    ),
-                    Text(
-                      'Speciality',
-                      style: TextStyle(
-                          color: Color.fromARGB(255, 26, 30, 31),
-                          fontSize: 14 * (screenWidth / 360)),
-                    ),
-                    InkWell(
-                      onTap: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            'Book An Appointment',
-                            style: TextStyle(
-                                color: const Color.fromARGB(255, 236, 3, 3)),
-                          ),
-                          SizedBox(width: 10),
-                          Icon(
-                            Icons.arrow_forward,
-                            color: const Color.fromARGB(255, 240, 6, 6),
-                            size: 20,
-                          )
-                        ],
+              ],
+            ),
+            child: Row(
+              children: [
+                //image
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: screenHeight * 0.12,
+                        width: screenWidth * 0.2,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius:
+                              BorderRadius.circular(screenWidth * 0.02),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color.fromARGB(255, 128, 123, 123)
+                                  .withOpacity(0.2),
+                              spreadRadius: 1,
+                              blurRadius: 7,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(screenWidth * 0.02),
+                          child: Image.asset('images/profile.png'),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                //
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Dr. Doctor Name',
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 3, 58, 80),
+                            fontSize: 16 * (screenWidth / 360)),
+                      ),
+                      Text(
+                        'Speciality',
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 26, 30, 31),
+                            fontSize: 14 * (screenWidth / 360)),
+                      ),
+                      InkWell(
+                        onTap: () {},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Book An Appointment',
+                              style: TextStyle(
+                                  color: const Color.fromARGB(255, 236, 3, 3)),
+                            ),
+                            SizedBox(width: 10),
+                            Icon(
+                              Icons.arrow_forward,
+                              color: const Color.fromARGB(255, 240, 6, 6),
+                              size: 20,
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -157,7 +157,7 @@ class _HomeState extends State<Home> {
                 height: 155,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 236, 234, 234),
+                  color: Color.fromARGB(255, 223, 234, 237),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Column(
@@ -203,7 +203,10 @@ class _HomeState extends State<Home> {
               padding: EdgeInsets.only(left: 15, top: 15),
               child: Text(
                 'Other Services',
-                style: TextStyle(fontSize: 17 * (screenWidth / 360)),
+                style: TextStyle(
+                    fontSize: 17 * (screenWidth / 360),
+                    color: const Color.fromRGBO(24, 97, 121, 0.8),
+                    fontWeight: FontWeight.w500),
               ),
             ),
             //svrcs
@@ -254,7 +257,7 @@ class _HomeState extends State<Home> {
                       onTap: data['onTap'] as VoidCallback,
                       child: Card(
                         elevation: 0,
-                        color: Color.fromARGB(255, 237, 234, 234),
+                        color: Color.fromARGB(255, 223, 234, 237),
                         shape: RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.circular(screenWidth * 0.03),
@@ -288,10 +291,9 @@ class _HomeState extends State<Home> {
       //bottombar
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-
-        backgroundColor: Colors.grey,
         iconSize: 25,
-        selectedItemColor: Color.fromARGB(255, 10, 95, 115),
+        backgroundColor: const Color.fromRGBO(24, 97, 121, 0.8),
+        selectedItemColor: Color.fromARGB(255, 1, 235, 211),
         unselectedItemColor: Colors.white,
         showSelectedLabels: true,
         showUnselectedLabels: false,

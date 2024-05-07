@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_unnecessary_containers
+// ignore_for_file: avoid_unnecessary_containers, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 
@@ -21,12 +21,18 @@ class _SelectUserState extends State<SelectUser> {
       child: Scaffold(
         backgroundColor: Colors.grey.shade100,
         appBar: AppBar(
-          backgroundColor: Colors.amber,
-          title: const Text('Select User'),
+          backgroundColor: const Color.fromRGBO(24, 97, 121, 0.8),
+          title: const Text(
+            'Select User',
+            style: TextStyle(color: Colors.white),
+          ),
           automaticallyImplyLeading: false,
           actions: <Widget>[
             IconButton(
-              icon: const Icon(Icons.logout_sharp),
+              icon: const Icon(
+                Icons.logout_sharp,
+                color: Colors.white,
+              ),
               onPressed: () {
                 // Navigator.pushNamed(context, '/Login');
                 Navigator.pushReplacementNamed(context, '/Login');
@@ -53,7 +59,7 @@ class _SelectUserState extends State<SelectUser> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
-                  backgroundColor: Colors.amber,
+                  backgroundColor: const Color.fromRGBO(24, 97, 121, 0.8),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -97,7 +103,7 @@ class _SelectUserState extends State<SelectUser> {
           // height: 100,
           decoration: BoxDecoration(
             color: _selectedIndex == i
-                ? const Color.fromRGBO(164, 191, 223, 1)
+                ? Color.fromARGB(255, 136, 183, 197)
                 : Colors.white,
             borderRadius: BorderRadius.circular(screenWidth * 0.02),
             boxShadow: [
@@ -121,7 +127,7 @@ class _SelectUserState extends State<SelectUser> {
                       width: screenWidth * 0.2,
                       decoration: BoxDecoration(
                         color: _selectedIndex == i
-                            ? const Color.fromRGBO(164, 191, 223, 1)
+                            ? Color.fromARGB(255, 136, 183, 197)
                             : Colors.white,
                         borderRadius: BorderRadius.circular(screenWidth * 0.02),
                         boxShadow: [
@@ -143,12 +149,29 @@ class _SelectUserState extends State<SelectUser> {
                 ),
               ),
               //
-              const Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Id'),
-                  Text('Name'),
-                  Text('Redg date'),
+                  Text(
+                    'Id',
+                    style: TextStyle(
+                      color: _selectedIndex == i
+                          ? Color.fromARGB(255, 255, 255, 255)
+                          : Colors.black,
+                    ),
+                  ),
+                  Text(
+                    'Name',
+                    style: TextStyle(
+                      color: _selectedIndex == i ? Colors.white : Colors.black,
+                    ),
+                  ),
+                  Text(
+                    'Redg date',
+                    style: TextStyle(
+                      color: _selectedIndex == i ? Colors.white : Colors.black,
+                    ),
+                  ),
                 ],
               ),
             ],
