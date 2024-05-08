@@ -266,7 +266,7 @@ class _AppointmentState extends State<Appointment>
                         ),
                         child: Padding(
                           padding: EdgeInsets.all(screenWidth * 0.02),
-                          child: Image.asset('images/profile.png'),
+                          child: Image.asset('images/doctor.png'),
                         ),
                       ),
                     ],

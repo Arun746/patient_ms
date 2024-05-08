@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'package:table_calendar/table_calendar.dart';
 
 class BookAppointment extends StatefulWidget {
@@ -14,19 +15,15 @@ class BookAppointment extends StatefulWidget {
 class _BookAppointmentState extends State<BookAppointment> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
+  int? _selectedTime;
+  DateTime _focusedDay = DateTime.now();
+  late DateTime _selectedDay;
 
-  // DatePicker() {
-  //   showDatePicker(
-  //     context: context,
-  //     initialDate: DateTime.now(),
-  //     firstDate: DateTime.now(),
-  //     lastDate: DateTime(2025),
-  //   ).then((pickedDate) {
-  //     if (pickedDate != null) {
-  //       print('Picked date: $pickedDate');
-  //     }
-  //   });
-  // }
+  @override
+  void initState() {
+    super.initState();
+    _selectedDay = DateTime.now();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,96 +55,114 @@ class _BookAppointmentState extends State<BookAppointment> {
           children: [
             //heading
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              padding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.05,
+                vertical: screenHeight * 0.02,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  // color: Colors.white,
+                  color: Color.fromARGB(255, 229, 245, 248),
+                  boxShadow: [
+                    BoxShadow(
+                      color:
+                          const Color.fromARGB(255, 0, 0, 0).withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 4,
+                      offset: const Offset(1, 1),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: screenHeight * 0.002),
-                        child: Text(
-                          'Dr. Binod Kumar Nepal',
-                          style: GoogleFonts.courgette(
-                              fontSize: 18 * (screenWidth / 360)),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: screenHeight * 0.002),
-                        child: Text(
-                          'Cardiologist',
-                          style: GoogleFonts.nunito(
-                              fontSize: 16 * (screenWidth / 360)),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: screenHeight * 0.002),
-                        child: Text(
-                          '12 Years Of Experience',
-                          style: TextStyle(
-                            fontSize: 14 * (screenWidth / 360),
-                            color: Colors.grey.shade600,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: screenHeight * 0.002),
+                            child: Text(
+                              'Dr. Binod Kumar Nepal',
+                              style: GoogleFonts.courgette(
+                                  fontSize: 18 * (screenWidth / 360)),
+                            ),
                           ),
-                        ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: screenHeight * 0.002),
+                            child: Text(
+                              'Cardiologist',
+                              style: GoogleFonts.nunito(
+                                  fontSize: 16 * (screenWidth / 360)),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: screenHeight * 0.002),
+                            child: Text(
+                              '12 Years Of Experience',
+                              style: TextStyle(
+                                fontSize: 14 * (screenWidth / 360),
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: screenWidth * 0.3,
-                        child: Image.asset('images/profile.png'),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: screenWidth * 0.33,
+                            child: Image.asset('images/doctor.png'),
+                          )
+                        ],
                       )
                     ],
-                  )
-                ],
+                  ),
+                ),
               ),
             ),
-            //divider
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-              child: Divider(
-                color: const Color.fromRGBO(24, 97, 121, 0.8),
-              ),
-            ),
+
             //exp
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: screenWidth * 0.05,
-                vertical: screenHeight * 0.002,
-              ),
-              child: Text(
-                'Qualification',
-                style: TextStyle(
-                  fontSize: 18 * (screenWidth / 360),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: screenWidth * 0.05,
-                vertical: screenHeight * 0.002,
-              ),
-              child: Text(
-                'XXXXXXX XXXXXXXX XXXXXXXX',
-                style: TextStyle(
-                  fontSize: 14 * (screenWidth / 360),
-                  color: Colors.grey.shade600,
-                ),
-              ),
-            ),
-            //divider
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-              child: Divider(
-                color: const Color.fromRGBO(24, 97, 121, 0.8),
-              ),
-            ),
+            // Padding(
+            //   padding: EdgeInsets.symmetric(
+            //     horizontal: screenWidth * 0.05,
+            //     vertical: screenHeight * 0.002,
+            //   ),
+            //   child: Container(
+            //     width: double.infinity,
+            //     decoration: BoxDecoration(
+            //       borderRadius: BorderRadius.circular(10),
+            //       color: Color.fromARGB(255, 122, 231, 231),
+            //     ),
+            //     child: Padding(
+            //       padding: EdgeInsets.symmetric(horizontal: 8),
+            //       child: Column(
+            //         crossAxisAlignment: CrossAxisAlignment.start,
+            //         children: [
+            //           Text(
+            //             'Qualification',
+            //             style: TextStyle(
+            //               fontSize: 18 * (screenWidth / 360),
+            //             ),
+            //           ),
+            //           Text(
+            //             'xxxxx xxxx xxxx',
+            //             style: TextStyle(
+            //               fontSize: 14 * (screenWidth / 360),
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
+
             //calendar
             Padding(
               padding: EdgeInsets.symmetric(
@@ -162,37 +177,52 @@ class _BookAppointmentState extends State<BookAppointment> {
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-              child: SizedBox(
+              child: Container(
+                color: Color.fromARGB(255, 206, 246, 245),
                 child: TableCalendar(
                   firstDay: DateTime.now(),
-                  lastDay: DateTime.now().add(Duration(days: 7)),
-                  focusedDay: DateTime.now(),
+                  lastDay: DateTime(2025),
+                  focusedDay: _focusedDay,
                   headerStyle: HeaderStyle(
                     headerMargin: EdgeInsets.zero,
                     leftChevronIcon: Icon(Icons.arrow_back_ios),
                     rightChevronIcon: Icon(Icons.arrow_forward_ios),
                     formatButtonVisible: false,
+                    titleCentered: true,
+                    //  backgroundColor: Colors.blue,
+                    // titleStyle: TextStyle(color: Colors.white),
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 174, 230, 234),
+                    ),
+                  ),
+                  calendarStyle: CalendarStyle(
+                    rowDecoration: BoxDecoration(
+                      color: Color.fromARGB(255, 206, 246, 245),
+                    ),
                   ),
                   calendarFormat: CalendarFormat.month,
-                  // calendarBuilders: CalendarBuilders(
-                  //   selectedBuilder: (context, date, _) {
-                  //     return Container(
-                  //       margin: EdgeInsets.all(2.0),
-                  //       padding: EdgeInsets.all(3.0),
-                  //       decoration: BoxDecoration(
-                  //         color: Colors.blue,
-                  //         borderRadius: BorderRadius.circular(8.0),
-                  //       ),
-                  //       child: Text(
-                  //         '${date.day}',
-                  //         style: TextStyle(
-                  //           color: Colors.white,
-                  //           fontSize: 16.0,
-                  //         ),
-                  //       ),
-                  //     );
-                  //   },
-                  // ),
+                  selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
+                  onDaySelected: (selectedDay, focusedDay) {
+                    setState(() {
+                      _selectedDay = selectedDay;
+                      _focusedDay = focusedDay;
+                      print(_selectedDay);
+                    });
+                  },
+                  calendarBuilders: CalendarBuilders(
+                    selectedBuilder: (context, date, _) => Container(
+                      margin: const EdgeInsets.all(4.0),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(
+                        '${date.day}',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -215,18 +245,23 @@ class _BookAppointmentState extends State<BookAppointment> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: List<Widget>.generate(10, (index) {
+                    children: List<Widget>.generate(10, (i) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: InkWell(
-                          onTap: () {},
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _selectedTime = _selectedTime == i ? null : i;
+                            });
+                          },
                           child: Container(
                             height: screenHeight * 0.05,
                             width: screenWidth * 0.25,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Color.fromARGB(204, 75, 186, 173),
-                            ),
+                                borderRadius: BorderRadius.circular(15),
+                                color: _selectedTime == i
+                                    ? Colors.red
+                                    : Color.fromARGB(255, 22, 189, 158)),
                             child: Center(
                                 child: Text(
                               '10:00 AM',
@@ -253,8 +288,10 @@ class _BookAppointmentState extends State<BookAppointment> {
                     ),
                     elevation: 5,
                   ),
-                  onPressed: () {},
-                  child: Text('Confirm Date & Time'),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/BookPayment');
+                  },
+                  child: Text('Book Appointment'),
                 ),
               ),
             )

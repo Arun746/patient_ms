@@ -2,6 +2,7 @@
 
 import 'package:patient_ms/screen/appointment.screen.dart';
 import 'package:patient_ms/screen/bookappointment.screen.dart';
+import 'package:patient_ms/screen/bookpayment.screen.dart';
 import 'package:patient_ms/screen/doctorslist.screen.dart';
 import 'package:patient_ms/screen/home.screen.dart';
 import 'package:patient_ms/screen/login.screen.dart';
@@ -39,6 +40,7 @@ class _MyAppState extends State<MyApp> {
         '/Appointment': (BuildContext context) => const Appointment(),
         '/Doctors': (BuildContext context) => const DoctorList(),
         '/BookAppointment': (BuildContext context) => const BookAppointment(),
+        '/BookPayment': (BuildContext context) => const BookPayment(),
       },
       debugShowCheckedModeBanner: false,
     );
