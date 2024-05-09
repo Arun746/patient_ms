@@ -31,7 +31,7 @@ class _MyAppState extends State<MyApp> {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Color.fromARGB(0, 255, 255, 255)));
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Norvic Hospital',
       home: const LoginScreen(),
       routes: <String, WidgetBuilder>{
         '/Login': (BuildContext context) => const LoginScreen(),

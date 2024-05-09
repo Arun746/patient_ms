@@ -93,8 +93,17 @@ class _AppointmentState extends State<Appointment>
                   Container(
                     margin: EdgeInsets.all(screenWidth * 0.03),
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 221, 234, 238),
-                      borderRadius: BorderRadius.circular(screenWidth * 0.05),
+                      color: Color.fromARGB(255, 216, 227, 229),
+                      borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color.fromARGB(255, 0, 0, 0)
+                              .withOpacity(0.2),
+                          spreadRadius: 1,
+                          blurRadius: 4,
+                          offset: const Offset(1, 1),
+                        ),
+                      ],
                     ),
                     child: TextField(
                       controller: searchController,
@@ -110,7 +119,8 @@ class _AppointmentState extends State<Appointment>
                   ),
                   //specialities
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.024),
                     child: SizedBox(
                       height: screenHeight * 0.68,
                       child: GridView.builder(
@@ -119,23 +129,44 @@ class _AppointmentState extends State<Appointment>
                           crossAxisSpacing: screenWidth * 0.01,
                           mainAxisSpacing: screenHeight * 0.001,
                         ),
-                        itemCount: 15,
+                        itemCount: 18,
                         itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(context, '/Doctors');
-                            },
-                            child: Card(
-                              elevation: 0,
-                              color: Color.fromARGB(255, 168, 197, 201),
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(screenWidth * 0.03),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(screenWidth * 0.01),
-                                child: Column(
-                                  children: [],
+                          return Padding(
+                            padding: EdgeInsets.all(screenWidth * 0.02),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pushNamed(context, '/Doctors');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.circular(screenWidth * 0.03),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      offset: Offset(1, 1),
+                                      spreadRadius: 1,
+                                      blurRadius: 4,
+                                    ),
+                                  ],
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(screenWidth * 0.01),
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: SizedBox(
+                                          child: Image.asset(
+                                              'images/speciality.png'),
+                                        ),
+                                      ),
+                                      Text(
+                                        'Orthopedic Implants',
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -244,7 +275,7 @@ class _AppointmentState extends State<Appointment>
               children: [
                 //image
                 Padding(
-                  padding: const EdgeInsets.all(5.0),
+                  padding: EdgeInsets.all(screenWidth * 0.015),
                   child: Column(
                     children: [
                       Container(
@@ -274,7 +305,7 @@ class _AppointmentState extends State<Appointment>
                 ),
                 //
                 Padding(
-                  padding: const EdgeInsets.only(left: 15.0),
+                  padding: EdgeInsets.only(left: screenWidth * 0.03),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -290,24 +321,21 @@ class _AppointmentState extends State<Appointment>
                             color: Color.fromARGB(255, 26, 30, 31),
                             fontSize: 14 * (screenWidth / 360)),
                       ),
-                      InkWell(
-                        onTap: () {},
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Book An Appointment',
-                              style: TextStyle(
-                                  color: const Color.fromARGB(255, 236, 3, 3)),
-                            ),
-                            SizedBox(width: 10),
-                            Icon(
-                              Icons.arrow_forward,
-                              color: const Color.fromARGB(255, 240, 6, 6),
-                              size: 20,
-                            )
-                          ],
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'Book An Appointment',
+                            style: TextStyle(
+                                color: const Color.fromARGB(255, 236, 3, 3)),
+                          ),
+                          SizedBox(width: screenWidth * 0.01),
+                          Icon(
+                            Icons.arrow_forward,
+                            color: const Color.fromARGB(255, 240, 6, 6),
+                            size: screenWidth * 0.05,
+                          )
+                        ],
                       ),
                     ],
                   ),

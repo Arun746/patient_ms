@@ -44,7 +44,7 @@ class _BookAppointmentState extends State<BookAppointment> {
               'Book Appointment',
               style: TextStyle(color: Colors.white),
             ),
-            SizedBox(width: 10), // Space between texts
+            SizedBox(width: 10),
             Text('      '),
           ],
         ),
@@ -63,7 +63,7 @@ class _BookAppointmentState extends State<BookAppointment> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   // color: Colors.white,
-                  color: Color.fromARGB(255, 229, 245, 248),
+                  color: Color.fromARGB(223, 233, 249, 249),
                   boxShadow: [
                     BoxShadow(
                       color:
@@ -75,49 +75,52 @@ class _BookAppointmentState extends State<BookAppointment> {
                   ],
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: screenHeight * 0.002),
-                            child: Text(
-                              'Dr. Binod Kumar Nepal',
-                              style: GoogleFonts.courgette(
-                                  fontSize: 18 * (screenWidth / 360)),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: screenHeight * 0.002),
-                            child: Text(
-                              'Cardiologist',
-                              style: GoogleFonts.nunito(
-                                  fontSize: 16 * (screenWidth / 360)),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: screenHeight * 0.002),
-                            child: Text(
-                              '12 Years Of Experience',
-                              style: TextStyle(
-                                fontSize: 14 * (screenWidth / 360),
-                                color: Colors.grey.shade600,
+                      Padding(
+                        padding: EdgeInsets.all(screenWidth * 0.02),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: screenHeight * 0.002),
+                              child: Text(
+                                'Dr. Binod Kumar Nepal',
+                                style: GoogleFonts.poppins(
+                                    fontSize: 18 * (screenWidth / 360)),
                               ),
                             ),
-                          ),
-                        ],
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: screenHeight * 0.002),
+                              child: Text(
+                                'Cardiologist',
+                                style: GoogleFonts.nunito(
+                                    fontSize: 16 * (screenWidth / 360)),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: screenHeight * 0.002),
+                              child: Text(
+                                '12 Years Of Experience',
+                                style: TextStyle(
+                                  fontSize: 14 * (screenWidth / 360),
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            width: screenWidth * 0.33,
+                            width: screenWidth * 0.25,
                             child: Image.asset('images/doctor.png'),
                           )
                         ],
@@ -206,12 +209,12 @@ class _BookAppointmentState extends State<BookAppointment> {
                     setState(() {
                       _selectedDay = selectedDay;
                       _focusedDay = focusedDay;
-                      print(_selectedDay);
+                      // print(_selectedDay);
                     });
                   },
                   calendarBuilders: CalendarBuilders(
                     selectedBuilder: (context, date, _) => Container(
-                      margin: const EdgeInsets.all(4.0),
+                      margin: EdgeInsets.all(screenWidth * 0.01),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: Colors.red,
@@ -240,14 +243,14 @@ class _BookAppointmentState extends State<BookAppointment> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.023),
               child: SizedBox(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: List<Widget>.generate(10, (i) {
                       return Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: EdgeInsets.all(screenWidth * 0.02),
                         child: GestureDetector(
                           onTap: () {
                             setState(() {
@@ -277,7 +280,7 @@ class _BookAppointmentState extends State<BookAppointment> {
             ),
             //confirm slot btn
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(screenWidth * 0.02),
               child: Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(

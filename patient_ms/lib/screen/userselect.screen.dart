@@ -23,7 +23,7 @@ class _SelectUserState extends State<SelectUser> {
         appBar: AppBar(
           backgroundColor: const Color.fromRGBO(24, 97, 121, 0.8),
           title: const Text(
-            'Select User',
+            'Select Profile',
             style: TextStyle(color: Colors.white),
           ),
           automaticallyImplyLeading: false,
@@ -100,7 +100,6 @@ class _SelectUserState extends State<SelectUser> {
       },
       child: ListTile(
         title: Container(
-          // height: 100,
           decoration: BoxDecoration(
             color: _selectedIndex == i
                 ? Color.fromARGB(255, 136, 183, 197)
@@ -119,7 +118,7 @@ class _SelectUserState extends State<SelectUser> {
             children: [
               //image
               Padding(
-                padding: const EdgeInsets.all(5.0),
+                padding: EdgeInsets.all(screenWidth * 0.01),
                 child: Column(
                   children: [
                     Container(
@@ -149,30 +148,35 @@ class _SelectUserState extends State<SelectUser> {
                 ),
               ),
               //
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Id',
-                    style: TextStyle(
-                      color: _selectedIndex == i
-                          ? Color.fromARGB(255, 255, 255, 255)
-                          : Colors.black,
+              Padding(
+                padding: EdgeInsets.all(screenWidth * 0.02),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Id',
+                      style: TextStyle(
+                        color: _selectedIndex == i
+                            ? Color.fromARGB(255, 255, 255, 255)
+                            : Colors.black,
+                      ),
                     ),
-                  ),
-                  Text(
-                    'Name',
-                    style: TextStyle(
-                      color: _selectedIndex == i ? Colors.white : Colors.black,
+                    Text(
+                      'Name',
+                      style: TextStyle(
+                        color:
+                            _selectedIndex == i ? Colors.white : Colors.black,
+                      ),
                     ),
-                  ),
-                  Text(
-                    'Redg date',
-                    style: TextStyle(
-                      color: _selectedIndex == i ? Colors.white : Colors.black,
+                    Text(
+                      'Redg date',
+                      style: TextStyle(
+                        color:
+                            _selectedIndex == i ? Colors.white : Colors.black,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),

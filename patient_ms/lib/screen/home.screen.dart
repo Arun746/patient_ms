@@ -50,7 +50,7 @@ class _HomeState extends State<Home> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //profile
-            // ignore: avoid_unnecessary_containers
+
             Row(
               children: [
                 Expanded(
@@ -152,9 +152,9 @@ class _HomeState extends State<Home> {
             ),
             //bookappointment
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+              padding: EdgeInsets.symmetric(horizontal: 12),
               child: Container(
-                height: 155,
+                height: screenHeight * 0.2,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: Color.fromARGB(255, 223, 234, 237),
@@ -163,8 +163,10 @@ class _HomeState extends State<Home> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 8),
+                      padding: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.01,
+                        horizontal: screenWidth * 0.02,
+                      ),
                       child: Text(
                         'With Just One Click Book Your Appointment And Make Your Checkup Easy',
                         style: GoogleFonts.merienda(
@@ -181,8 +183,9 @@ class _HomeState extends State<Home> {
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Color.fromARGB(255, 255, 255, 255),
                         backgroundColor: Color.fromARGB(255, 4, 85, 106),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.1,
+                            vertical: screenHeight * 0.01),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18),
                         ),
@@ -190,7 +193,7 @@ class _HomeState extends State<Home> {
                       child: Text(
                         'Book Now',
                         style: GoogleFonts.archivo(
-                          fontSize: 15,
+                          fontSize: 15 * (screenWidth / 360),
                         ),
                       ),
                     )
@@ -200,7 +203,8 @@ class _HomeState extends State<Home> {
             ),
             //svrcsheading
             Padding(
-              padding: EdgeInsets.only(left: 15, top: 15),
+              padding: EdgeInsets.only(
+                  left: screenWidth * 0.04, top: screenHeight * 0.02),
               child: Text(
                 'Other Services',
                 style: TextStyle(
@@ -211,7 +215,7 @@ class _HomeState extends State<Home> {
             ),
             //svrcs
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.025),
               child: SizedBox(
                 height: screenHeight * 0.5,
                 child: GridView.builder(
@@ -274,7 +278,8 @@ class _HomeState extends State<Home> {
                               ),
                               Text(
                                 data['text'] as String,
-                                style: TextStyle(fontSize: 18),
+                                style: TextStyle(
+                                    fontSize: 16 * (screenWidth / 360)),
                               ),
                             ],
                           ),

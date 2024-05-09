@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -242,7 +244,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: <Widget>[
                         Expanded(
                           child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            margin: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.03),
                             child: const Divider(
                               color: Color.fromARGB(255, 162, 159, 159),
                               thickness: 0.8,
@@ -258,7 +261,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         Expanded(
                           child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            margin: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.03),
                             child: const Divider(
                               color: Color.fromARGB(255, 133, 132, 132),
                               thickness: 0.8,
@@ -269,7 +273,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 0),
+                    padding: EdgeInsets.only(top: 0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
