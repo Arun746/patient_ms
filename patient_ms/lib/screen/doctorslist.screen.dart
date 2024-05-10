@@ -151,27 +151,25 @@ class _DoctorListState extends State<DoctorList> {
                       Text(
                         'Speciality',
                         style: TextStyle(
-                            color: Color.fromARGB(255, 26, 30, 31),
-                            fontSize: 14 * (screenWidth / 360)),
-                      ),
-                      InkWell(
-                        onTap: () {},
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Book An Appointment',
-                              style: TextStyle(
-                                  color: const Color.fromARGB(255, 236, 3, 3)),
-                            ),
-                            SizedBox(width: 10),
-                            Icon(
-                              Icons.arrow_forward,
-                              color: const Color.fromARGB(255, 240, 6, 6),
-                              size: 20,
-                            )
-                          ],
+                          color: Color.fromARGB(255, 26, 30, 31),
+                          fontSize: 14 * (screenWidth / 360),
                         ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'Book An Appointment',
+                            style: TextStyle(
+                                color: const Color.fromARGB(255, 236, 3, 3)),
+                          ),
+                          SizedBox(width: 10),
+                          Icon(
+                            Icons.arrow_forward,
+                            color: const Color.fromARGB(255, 240, 6, 6),
+                            size: 20,
+                          ),
+                        ],
                       ),
                     ],
                   ),

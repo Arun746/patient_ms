@@ -217,7 +217,7 @@ class _BookAppointmentState extends State<BookAppointment> {
                       margin: EdgeInsets.all(screenWidth * 0.01),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: Colors.red,
+                        color: Color.fromARGB(255, 239, 92, 81),
                         shape: BoxShape.circle,
                       ),
                       child: Text(
@@ -263,7 +263,7 @@ class _BookAppointmentState extends State<BookAppointment> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
                                 color: _selectedTime == i
-                                    ? Colors.red
+                                    ? Color.fromARGB(255, 239, 75, 63)
                                     : Color.fromARGB(255, 22, 189, 158)),
                             child: Center(
                                 child: Text(
