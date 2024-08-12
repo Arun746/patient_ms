@@ -29,17 +29,17 @@ class _HomeState extends State<Home> {
   }
 
   void _alertSnackbar(String message) {
-    final snackBar = SnackBar(
-      backgroundColor: Color.fromARGB(255, 233, 59, 59),
-      duration: Duration(milliseconds: 500),
-      content: Text(
-        message,
-        style: TextStyle(fontSize: 14 * (screenWidth / 360)),
-        textAlign: TextAlign.center,
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Color.fromARGB(255, 233, 59, 59),
+        duration: Duration(milliseconds: 500),
+        content: Text(
+          message,
+          style: TextStyle(fontSize: 14 * (screenWidth / 360)),
+          textAlign: TextAlign.center,
+        ),
       ),
     );
-
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -50,7 +50,6 @@ class _HomeState extends State<Home> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //profile
-
             Row(
               children: [
                 Expanded(

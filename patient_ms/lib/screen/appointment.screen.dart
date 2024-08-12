@@ -93,17 +93,8 @@ class _AppointmentState extends State<Appointment>
                   Container(
                     margin: EdgeInsets.all(screenWidth * 0.03),
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 216, 227, 229),
-                      borderRadius: BorderRadius.circular(screenWidth * 0.02),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color.fromARGB(255, 0, 0, 0)
-                              .withOpacity(0.2),
-                          spreadRadius: 1,
-                          blurRadius: 4,
-                          offset: const Offset(1, 1),
-                        ),
-                      ],
+                      color: Color.fromARGB(255, 221, 234, 238),
+                      borderRadius: BorderRadius.circular(screenWidth * 0.05),
                     ),
                     child: TextField(
                       controller: searchController,
@@ -112,7 +103,7 @@ class _AppointmentState extends State<Appointment>
                         contentPadding: EdgeInsetsDirectional.symmetric(
                             vertical: 0.015 * screenHeight),
                         prefixIcon: Icon(Icons.search),
-                        hintText: 'Search Specialities here',
+                        hintText: 'Search  specialities  here',
                         border: InputBorder.none,
                       ),
                     ),
@@ -207,7 +198,7 @@ class _AppointmentState extends State<Appointment>
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          for (int i = 0; i < 6; i++) _list(i),
+                          for (int i = 0; i < 6; i++) _doctorlist(i),
                         ],
                       ),
                     ),
@@ -250,7 +241,7 @@ class _AppointmentState extends State<Appointment>
     );
   }
 
-  Widget _list(int i) {
+  Widget _doctorlist(int i) {
     return GestureDetector(
       child: InkWell(
         onTap: () {
