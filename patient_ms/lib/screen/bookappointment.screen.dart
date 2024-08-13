@@ -130,7 +130,6 @@ class _BookAppointmentState extends State<BookAppointment> {
                 ),
               ),
             ),
-
             //exp
             // Padding(
             //   padding: EdgeInsets.symmetric(
@@ -165,7 +164,6 @@ class _BookAppointmentState extends State<BookAppointment> {
             //     ),
             //   ),
             // ),
-
             //calendar
             Padding(
               padding: EdgeInsets.symmetric(

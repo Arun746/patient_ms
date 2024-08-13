@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:patient_ms/screen/home.screen.dart';
 
 class BookPayment extends StatefulWidget {
   const BookPayment({super.key});
@@ -514,7 +515,12 @@ class _BookPaymentState extends State<BookPayment> {
                   ),
                   minimumSize: Size(screenWidth * 0.6, screenHeight * 0.06),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Home()),
+                  );
+                },
                 child: const Text('Pay Now'),
               ),
             ),

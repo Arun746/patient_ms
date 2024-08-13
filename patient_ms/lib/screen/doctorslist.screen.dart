@@ -1,6 +1,7 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:patient_ms/screen/appointment.screen.dart';
 
 class DoctorList extends StatefulWidget {
   const DoctorList({super.key});
@@ -13,6 +14,7 @@ class _DoctorListState extends State<DoctorList> {
   late TextEditingController searchController;
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -22,62 +24,85 @@ class _DoctorListState extends State<DoctorList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(24, 97, 121, 0.8),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Choosen Speciality',
-              style: TextStyle(color: Colors.white),
-            ),
-            SizedBox(width: 10), // Space between texts
-            Text('      '),
-          ],
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            //search
-            Container(
-              margin: EdgeInsets.all(screenWidth * 0.03),
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 221, 234, 238),
-                borderRadius: BorderRadius.circular(screenWidth * 0.05),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const Appointment()),
+        );
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color.fromRGBO(24, 97, 121, 0.8),
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Appointment()),
+              );
+            },
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Choosen Speciality',
+                style: TextStyle(color: Colors.white),
               ),
-              child: TextField(
-                controller: searchController,
-                onChanged: (query) {},
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsetsDirectional.symmetric(
-                      vertical: 0.015 * screenHeight),
-                  prefixIcon: Icon(Icons.search),
-                  hintText: 'Search doctors here',
-                  border: InputBorder.none,
+              SizedBox(width: 10), // Space between texts
+              Text('      '),
+            ],
+          ),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              //search
+              Container(
+                margin: EdgeInsets.all(screenWidth * 0.03),
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 221, 234, 238),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.05),
+                ),
+                child: TextField(
+                  controller: searchController,
+                  onChanged: (query) {},
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsetsDirectional.symmetric(
+                        vertical: 0.015 * screenHeight),
+                    prefixIcon: Icon(Icons.search),
+                    hintText: 'Search doctors here',
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
-            ),
-            //dlist
-            SizedBox(
-              height: screenHeight * 0.82,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    for (int i = 0; i < 6; i++) _list(i),
-                  ],
+              //dlist
+              SizedBox(
+                height: screenHeight * 0.82,
+                child: Padding(
+                  padding: EdgeInsets.only(right: screenWidth * 0.02),
+                  child: Scrollbar(
+                    controller: _scrollController,
+                    thumbVisibility: true,
+                    scrollbarOrientation: ScrollbarOrientation.right,
+                    thickness: 5,
+                    radius: Radius.circular(5),
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
+                      child: Column(
+                        children: [
+                          for (int i = 0; i < 6; i++) _list(i),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
