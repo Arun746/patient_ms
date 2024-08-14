@@ -81,7 +81,7 @@ class _DoctorListState extends State<DoctorList> {
               ),
               //dlist
               SizedBox(
-                height: screenHeight * 0.82,
+                height: screenHeight * 0.77,
                 child: Padding(
                   padding: EdgeInsets.only(right: screenWidth * 0.02),
                   child: Scrollbar(

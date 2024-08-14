@@ -32,7 +32,7 @@ class _BookPaymentState extends State<BookPayment> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Book Appointment',
+              'Confirm Appointment',
               style: TextStyle(color: Colors.white),
             ),
             SizedBox(width: 10),
@@ -474,27 +474,24 @@ class _BookPaymentState extends State<BookPayment> {
                         ),
                         child: Column(
                           children: [
-                            Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  //
-                                  Radio<int>(
-                                    value: 1,
-                                    groupValue: _paymenttype,
-                                    onChanged: (int? value) {
-                                      setState(() {
-                                        _paymenttype = value;
-                                      });
-                                    },
-                                  ),
-                                  //
-                                  SizedBox(
-                                    height: 70,
-                                    width: 300,
-                                    child: Image.asset('images/esewa.png'),
-                                  )
-                                ]),
+                            Row(children: [
+                              //
+                              Radio<int>(
+                                value: 1,
+                                groupValue: _paymenttype,
+                                onChanged: (int? value) {
+                                  setState(() {
+                                    _paymenttype = value;
+                                  });
+                                },
+                              ),
+                              //
+                              SizedBox(
+                                height: 70,
+                                width: 250,
+                                child: Image.asset('images/esewa.png'),
+                              )
+                            ]),
                           ],
                         ),
                       ),

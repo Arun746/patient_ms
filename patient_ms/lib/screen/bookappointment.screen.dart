@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:table_calendar/table_calendar.dart';
@@ -18,7 +20,7 @@ class _BookAppointmentState extends State<BookAppointment> {
   int? _selectedTime;
   DateTime _focusedDay = DateTime.now();
   late DateTime _selectedDay;
-
+  final ScrollController _scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -53,12 +55,9 @@ class _BookAppointmentState extends State<BookAppointment> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //heading
+            //drinfo
             Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: screenWidth * 0.05,
-                vertical: screenHeight * 0.02,
-              ),
+              padding: EdgeInsets.all(screenWidth * 0.04),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -74,59 +73,62 @@ class _BookAppointmentState extends State<BookAppointment> {
                     ),
                   ],
                 ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(screenWidth * 0.02),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: screenHeight * 0.002),
-                              child: Text(
-                                'Dr. Binod Kumar Nepal',
-                                style: GoogleFonts.poppins(
-                                    fontSize: 18 * (screenWidth / 360)),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: screenHeight * 0.002),
-                              child: Text(
-                                'Cardiologist',
-                                style: GoogleFonts.nunito(
-                                    fontSize: 16 * (screenWidth / 360)),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: screenHeight * 0.002),
-                              child: Text(
-                                '12 Years Of Experience',
-                                style: TextStyle(
-                                  fontSize: 14 * (screenWidth / 360),
-                                  color: Colors.grey.shade600,
-                                ),
-                              ),
-                            ),
-                          ],
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: screenWidth * 0.33,
+                      child: Image.asset('images/doctor.png'),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: screenHeight * 0.01,
                         ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: screenWidth * 0.25,
-                            child: Image.asset('images/doctor.png'),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: screenHeight * 0.001),
+                          child: Text(
+                            'Dr Rajendra Khanal',
+                            style: GoogleFonts.karma(
+                              fontSize: (screenWidth / 360) * 18,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: screenHeight * 0.002),
+                          child: Text(
+                            'Cardiology',
+                            style: TextStyle(
+                                fontSize: (screenWidth / 360) * 16,
+                                color: Colors.grey.shade800),
+                            softWrap: true,
+                            maxLines: 2,
+                          ),
+                        ),
+                        SizedBox(
+                          height: screenHeight * 0.005,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: screenHeight * 0.002),
+                          child: Text(
+                            '12 yrs of Experience',
+                            style: TextStyle(
+                                fontSize: (screenWidth / 360) * 16,
+                                color: Colors.grey.shade700),
+                            softWrap: true,
+                            maxLines: 2,
+                          ),
+                        ),
+                        SizedBox(
+                          height: screenHeight * 0.005,
+                        ),
+                      ],
+                    )
+                  ],
                 ),
               ),
             ),
@@ -167,8 +169,8 @@ class _BookAppointmentState extends State<BookAppointment> {
             //calendar
             Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: screenWidth * 0.05,
-              ),
+                  horizontal: screenWidth * 0.05,
+                  vertical: screenHeight * 0.005),
               child: Text(
                 'Select Date',
                 style: TextStyle(
@@ -240,27 +242,80 @@ class _BookAppointmentState extends State<BookAppointment> {
                 ),
               ),
             ),
+            // Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.023),
+            //   child: SizedBox(
+            //     child: SingleChildScrollView(
+            //       scrollDirection: Axis.horizontal,
+            //       child: Row(
+            //         children: List<Widget>.generate(10, (i) {
+            //           return Padding(
+            //             padding: EdgeInsets.all(screenWidth * 0.02),
+            //             child: GestureDetector(
+            //               onTap: () {
+            //                 setState(() {
+            //                   _selectedTime = _selectedTime == i ? null : i;
+            //                 });
+            //               },
+            //               child: Container(
+            //                 height: screenHeight * 0.05,
+            //                 width: screenWidth * 0.25,
+            //                 decoration: BoxDecoration(
+            //                     borderRadius: BorderRadius.circular(15),
+            //                     color: _selectedTime == i
+            //                         ? Color.fromARGB(255, 239, 75, 63)
+            //                         : Color.fromARGB(255, 22, 189, 158)),
+            //                 child: Center(
+            //                     child: Text(
+            //                   '10:00 AM',
+            //                   style: TextStyle(color: Colors.white),
+            //                 )),
+            //               ),
+            //             ),
+            //           );
+            //         }),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.023),
               child: SizedBox(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: List<Widget>.generate(10, (i) {
-                      return Padding(
-                        padding: EdgeInsets.all(screenWidth * 0.02),
-                        child: GestureDetector(
+                height: screenHeight * 0.2,
+                child: Scrollbar(
+                  controller: _scrollController,
+                  thumbVisibility: true,
+                  scrollbarOrientation: ScrollbarOrientation.right,
+                  thickness: screenWidth * 0.015,
+                  radius: Radius.circular(5),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      left: screenWidth * 0.02,
+                      right: screenWidth * 0.04,
+                    ),
+                    child: GridView.builder(
+                      controller: _scrollController,
+                      shrinkWrap: true,
+                      // physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: screenWidth * 0.04,
+                        mainAxisSpacing: screenHeight * 0.02,
+                        childAspectRatio: 4.2 / 1.5,
+                      ),
+                      itemCount: 15,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
                           onTap: () {
                             setState(() {
-                              _selectedTime = _selectedTime == i ? null : i;
+                              _selectedTime =
+                                  _selectedTime == index ? null : index;
                             });
                           },
                           child: Container(
-                            height: screenHeight * 0.05,
-                            width: screenWidth * 0.25,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
-                                color: _selectedTime == i
+                                color: _selectedTime == index
                                     ? Color.fromARGB(255, 239, 75, 63)
                                     : Color.fromARGB(255, 22, 189, 158)),
                             child: Center(
@@ -269,14 +324,17 @@ class _BookAppointmentState extends State<BookAppointment> {
                               style: TextStyle(color: Colors.white),
                             )),
                           ),
-                        ),
-                      );
-                    }),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
             ),
             //confirm slot btn
+            SizedBox(
+              height: screenHeight * 0.02,
+            ),
             Padding(
               padding: EdgeInsets.all(screenWidth * 0.02),
               child: Center(
@@ -288,14 +346,23 @@ class _BookAppointmentState extends State<BookAppointment> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     elevation: 5,
+                    fixedSize: Size(screenWidth * 0.5, screenHeight * 0.055),
                   ),
                   onPressed: () {
                     Navigator.pushNamed(context, '/BookPayment');
                   },
-                  child: Text('Book Appointment'),
+                  child: Text(
+                    'Book Appointment',
+                    style: TextStyle(
+                      fontSize: 12 * (screenWidth / 360),
+                    ),
+                  ),
                 ),
               ),
-            )
+            ),
+            SizedBox(
+              height: screenHeight * 0.01,
+            ),
           ],
         ),
       ),

@@ -116,7 +116,7 @@ class _AppointmentState extends State<Appointment>
                     ),
                     //specialities
                     SizedBox(
-                      height: screenHeight * 0.68,
+                      height: screenHeight * 0.623,
                       child: Padding(
                         padding: EdgeInsets.only(right: screenWidth * 0.02),
                         child: Scrollbar(
@@ -214,7 +214,7 @@ class _AppointmentState extends State<Appointment>
                     ),
                     //dlist
                     SizedBox(
-                      height: screenHeight * 0.68,
+                      height: screenHeight * 0.63,
                       child: Padding(
                         padding: EdgeInsets.only(right: screenWidth * 0.02),
                         child: Scrollbar(

@@ -2,7 +2,7 @@
 
 import 'package:patient_ms/screen/appointment.screen.dart';
 import 'package:patient_ms/screen/bookappointment.screen.dart';
-import 'package:patient_ms/screen/bookpayment.screen.dart';
+import 'package:patient_ms/screen/bookconfirm.screen.dart';
 import 'package:patient_ms/screen/doctorslist.screen.dart';
 import 'package:patient_ms/screen/home.screen.dart';
 import 'package:patient_ms/screen/login.screen.dart';
