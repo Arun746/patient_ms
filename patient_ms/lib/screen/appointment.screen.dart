@@ -49,6 +49,7 @@ class _AppointmentState extends State<Appointment>
   @override
   Widget build(BuildContext context) {
     _tabController.animateTo(currentTabIndex);
+    // final statusbarHeight = MediaQuery.of(context).padding.top;
     return WillPopScope(
       onWillPop: () async {
         Navigator.pushNamed(context, '/Home');
@@ -57,34 +58,40 @@ class _AppointmentState extends State<Appointment>
       child: DefaultTabController(
         length: 2,
         child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: const Color.fromRGBO(24, 97, 121, 0.8),
-            automaticallyImplyLeading: false,
-            title: Center(
-              child: Text(
-                'Get Doctor Appointment',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back,
-                  color: Color.fromARGB(255, 247, 244, 244)),
-              onPressed: () {
-                Navigator.pushNamed(context, '/Home');
-              },
-            ),
-            bottom: AppBar(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(screenHeight * 0.15),
+            child: AppBar(
+              backgroundColor: const Color.fromRGBO(24, 97, 121, 0.8),
               automaticallyImplyLeading: false,
-              title: TabBar(
-                controller: _tabController,
-                tabs: [
-                  Tab(
-                    child: Text(' Select Speciality'),
+              title: Center(
+                child: Text(
+                  'Get Doctor Appointment',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back,
+                    color: Color.fromARGB(255, 247, 244, 244)),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/Home');
+                },
+              ),
+              bottom: AppBar(
+                automaticallyImplyLeading: false,
+                title: SizedBox(
+                  height: screenHeight * 0.05,
+                  child: TabBar(
+                    controller: _tabController,
+                    tabs: [
+                      Tab(
+                        child: Text(' Select Speciality'),
+                      ),
+                      Tab(
+                        child: Text(' Select Doctors'),
+                      ),
+                    ],
                   ),
-                  Tab(
-                    child: Text(' Select Doctors'),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
@@ -97,7 +104,10 @@ class _AppointmentState extends State<Appointment>
                   children: [
                     //search
                     Container(
-                      margin: EdgeInsets.all(screenWidth * 0.03),
+                      height: screenHeight * 0.055,
+                      margin: EdgeInsets.symmetric(
+                          horizontal: screenWidth * 0.03,
+                          vertical: screenHeight * 0.005),
                       decoration: BoxDecoration(
                         color: Color.fromARGB(255, 221, 234, 238),
                         borderRadius: BorderRadius.circular(screenWidth * 0.05),
@@ -116,7 +126,7 @@ class _AppointmentState extends State<Appointment>
                     ),
                     //specialities
                     SizedBox(
-                      height: screenHeight * 0.623,
+                      height: screenHeight * 0.67,
                       child: Padding(
                         padding: EdgeInsets.only(right: screenWidth * 0.02),
                         child: Scrollbar(
@@ -195,7 +205,10 @@ class _AppointmentState extends State<Appointment>
                   children: [
                     //search
                     Container(
-                      margin: EdgeInsets.all(screenWidth * 0.03),
+                      height: screenHeight * 0.055,
+                      margin: EdgeInsets.symmetric(
+                          horizontal: screenWidth * 0.03,
+                          vertical: screenHeight * 0.005),
                       decoration: BoxDecoration(
                         color: Color.fromARGB(255, 221, 234, 238),
                         borderRadius: BorderRadius.circular(screenWidth * 0.05),
@@ -214,7 +227,7 @@ class _AppointmentState extends State<Appointment>
                     ),
                     //dlist
                     SizedBox(
-                      height: screenHeight * 0.63,
+                      height: screenHeight * 0.67,
                       child: Padding(
                         padding: EdgeInsets.only(right: screenWidth * 0.02),
                         child: Scrollbar(
@@ -226,7 +239,7 @@ class _AppointmentState extends State<Appointment>
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
-                                for (int i = 0; i < 6; i++) _doctorlist(i),
+                                for (int i = 0; i < 8; i++) _doctorlist(i),
                               ],
                             ),
                           ),
@@ -239,33 +252,36 @@ class _AppointmentState extends State<Appointment>
             ],
           ),
           //bottomnavbar
-          bottomNavigationBar: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: const Color.fromRGBO(24, 97, 121, 0.8),
-            selectedItemColor: Color.fromARGB(255, 6, 245, 221),
-            unselectedItemColor: Colors.white,
-            showSelectedLabels: true,
-            showUnselectedLabels: false,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.medication),
-                label: 'Medication',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_month),
-                label: 'Appoinment',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.more_vert),
-                label: 'More',
-              ),
-            ],
-            currentIndex: _selectedIndex,
-            onTap: onTabTapped,
+          bottomNavigationBar: SizedBox(
+            height: screenHeight * 0.08,
+            child: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: const Color.fromRGBO(24, 97, 121, 0.8),
+              selectedItemColor: Color.fromARGB(255, 6, 245, 221),
+              unselectedItemColor: Colors.white,
+              showSelectedLabels: true,
+              showUnselectedLabels: false,
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.medication),
+                  label: 'Medication',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.calendar_month),
+                  label: 'Appoinment',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.more_vert),
+                  label: 'More',
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              onTap: onTabTapped,
+            ),
           ),
         ),
       ),

@@ -24,6 +24,7 @@ class _DoctorListState extends State<DoctorList> {
 
   @override
   Widget build(BuildContext context) {
+    final statusbarHeight = MediaQuery.of(context).padding.top;
     return WillPopScope(
       onWillPop: () async {
         Navigator.push(
@@ -33,28 +34,31 @@ class _DoctorListState extends State<DoctorList> {
         return false;
       },
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color.fromRGBO(24, 97, 121, 0.8),
-          automaticallyImplyLeading: false,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Appointment()),
-              );
-            },
-          ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'Choosen Speciality',
-                style: TextStyle(color: Colors.white),
-              ),
-              SizedBox(width: 10), // Space between texts
-              Text('      '),
-            ],
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(screenHeight * 0.09),
+          child: AppBar(
+            backgroundColor: const Color.fromRGBO(24, 97, 121, 0.8),
+            automaticallyImplyLeading: false,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Appointment()),
+                );
+              },
+            ),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Choosen Speciality',
+                  style: TextStyle(color: Colors.white),
+                ),
+                SizedBox(width: 10), // Space between texts
+                Text('      '),
+              ],
+            ),
           ),
         ),
         body: SingleChildScrollView(
@@ -62,7 +66,10 @@ class _DoctorListState extends State<DoctorList> {
             children: [
               //search
               Container(
-                margin: EdgeInsets.all(screenWidth * 0.03),
+                height: screenHeight * 0.055,
+                margin: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.03,
+                    vertical: screenHeight * 0.02),
                 decoration: BoxDecoration(
                   color: Color.fromARGB(255, 221, 234, 238),
                   borderRadius: BorderRadius.circular(screenWidth * 0.05),
