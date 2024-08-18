@@ -302,7 +302,7 @@ class _AppointmentState extends State<Appointment>
               borderRadius: BorderRadius.circular(screenWidth * 0.02),
               boxShadow: [
                 BoxShadow(
-                  color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.2),
+                  color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.35),
                   spreadRadius: 1,
                   blurRadius: 4,
                   offset: const Offset(1, 1),
@@ -313,7 +313,8 @@ class _AppointmentState extends State<Appointment>
               children: [
                 //image
                 Padding(
-                  padding: EdgeInsets.all(screenWidth * 0.015),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: screenWidth * 0.017),
                   child: Column(
                     children: [
                       Container(
@@ -343,7 +344,7 @@ class _AppointmentState extends State<Appointment>
                 ),
                 //
                 Padding(
-                  padding: EdgeInsets.only(left: screenWidth * 0.03),
+                  padding: EdgeInsets.only(left: screenWidth * 0.025),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -365,13 +366,15 @@ class _AppointmentState extends State<Appointment>
                           Text(
                             'Book An Appointment',
                             style: TextStyle(
-                                color: const Color.fromARGB(255, 236, 3, 3)),
+                              color: const Color.fromARGB(255, 236, 3, 3),
+                              fontSize: 13 * (screenWidth / 360),
+                            ),
                           ),
                           SizedBox(width: screenWidth * 0.01),
                           Icon(
                             Icons.arrow_forward,
                             color: const Color.fromARGB(255, 240, 6, 6),
-                            size: screenWidth * 0.05,
+                            size: screenWidth * 0.045,
                           )
                         ],
                       ),

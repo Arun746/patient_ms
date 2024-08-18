@@ -24,7 +24,6 @@ class _DoctorListState extends State<DoctorList> {
 
   @override
   Widget build(BuildContext context) {
-    final statusbarHeight = MediaQuery.of(context).padding.top;
     return WillPopScope(
       onWillPop: () async {
         Navigator.push(
@@ -101,7 +100,7 @@ class _DoctorListState extends State<DoctorList> {
                       controller: _scrollController,
                       child: Column(
                         children: [
-                          for (int i = 0; i < 6; i++) _list(i),
+                          for (int i = 0; i < 10; i++) _list(i),
                         ],
                       ),
                     ),
@@ -129,7 +128,7 @@ class _DoctorListState extends State<DoctorList> {
               borderRadius: BorderRadius.circular(screenWidth * 0.02),
               boxShadow: [
                 BoxShadow(
-                  color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.2),
+                  color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.35),
                   spreadRadius: 1,
                   blurRadius: 4,
                   offset: const Offset(1, 1),
@@ -140,7 +139,8 @@ class _DoctorListState extends State<DoctorList> {
               children: [
                 //image
                 Padding(
-                  padding: const EdgeInsets.all(5.0),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: screenWidth * 0.017),
                   child: Column(
                     children: [
                       Container(
@@ -170,21 +170,22 @@ class _DoctorListState extends State<DoctorList> {
                 ),
                 //
                 Padding(
-                  padding: const EdgeInsets.only(left: 15.0),
+                  padding: EdgeInsets.only(left: screenWidth * 0.025),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Dr. Doctor Name',
                         style: TextStyle(
-                            color: Color.fromARGB(255, 3, 58, 80),
-                            fontSize: 16 * (screenWidth / 360)),
+                          color: Color.fromARGB(255, 3, 58, 80),
+                          fontSize: 15 * (screenWidth / 360),
+                        ),
                       ),
                       Text(
                         'Speciality',
                         style: TextStyle(
                           color: Color.fromARGB(255, 26, 30, 31),
-                          fontSize: 14 * (screenWidth / 360),
+                          fontSize: 13.5 * (screenWidth / 360),
                         ),
                       ),
                       Row(
@@ -193,13 +194,15 @@ class _DoctorListState extends State<DoctorList> {
                           Text(
                             'Book An Appointment',
                             style: TextStyle(
-                                color: const Color.fromARGB(255, 236, 3, 3)),
+                              color: const Color.fromARGB(255, 236, 3, 3),
+                              fontSize: 12.5 * (screenWidth / 360),
+                            ),
                           ),
                           SizedBox(width: 10),
                           Icon(
                             Icons.arrow_forward,
                             color: const Color.fromARGB(255, 240, 6, 6),
-                            size: 20,
+                            size: screenWidth * 0.045,
                           ),
                         ],
                       ),
