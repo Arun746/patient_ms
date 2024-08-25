@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -192,7 +191,7 @@ class _HomeState extends State<Home> {
                           ),
                           child: Text(
                             'With Just One Click Book Your Appointment And Make Your Checkup Easy',
-                            style: GoogleFonts.merienda(
+                            style: TextStyle(
                               fontSize: 18,
                               color: Color.fromARGB(255, 4, 85, 106),
                             ),
@@ -215,7 +214,7 @@ class _HomeState extends State<Home> {
                           ),
                           child: Text(
                             'Book Now',
-                            style: GoogleFonts.archivo(
+                            style: TextStyle(
                               fontSize: 15 * (screenWidth / 360),
                             ),
                           ),
