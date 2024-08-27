@@ -1,6 +1,10 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:patient_ms/model/speciality.model.dart';
+import 'package:patient_ms/services/speciality.services.dart';
 
 class Appointment extends StatefulWidget {
   const Appointment({super.key});
@@ -18,6 +22,7 @@ class _AppointmentState extends State<Appointment>
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
   final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -114,7 +119,11 @@ class _AppointmentState extends State<Appointment>
                       ),
                       child: TextField(
                         controller: searchController,
-                        onChanged: (query) {},
+                        onChanged: (query) {
+                          setState(() {
+                            searchController.text = query;
+                          });
+                        },
                         decoration: InputDecoration(
                           contentPadding: EdgeInsetsDirectional.symmetric(
                               vertical: 0.015 * screenHeight),
@@ -125,77 +134,171 @@ class _AppointmentState extends State<Appointment>
                       ),
                     ),
                     //specialities
-                    SizedBox(
-                      height: screenHeight * 0.67,
-                      child: Padding(
-                        padding: EdgeInsets.only(right: screenWidth * 0.02),
-                        child: Scrollbar(
-                          controller: _scrollController,
-                          thumbVisibility: true,
-                          scrollbarOrientation: ScrollbarOrientation.right,
-                          thickness: 5,
-                          radius: Radius.circular(5),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: screenWidth * 0.02),
-                            child: GridView.builder(
-                              controller: _scrollController,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                crossAxisSpacing: screenWidth * 0.01,
-                                mainAxisSpacing: screenHeight * 0.001,
+                    FutureBuilder<List<SpecialityDt>>(
+                        future: SpecialityService.getData(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<List<SpecialityDt>> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Padding(
+                              padding: EdgeInsets.only(top: screenHeight * 0.2),
+                              child: Column(
+                                children: [
+                                  const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Color.fromARGB(255, 78, 131, 187),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: screenHeight * 0.02),
+                                    child: const Text('Loading...'),
+                                  ),
+                                ],
                               ),
-                              itemCount: 18,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: EdgeInsets.all(screenWidth * 0.02),
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.pushNamed(context, '/Doctors');
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(
-                                            screenWidth * 0.03),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.2),
-                                            offset: Offset(1, 1),
-                                            spreadRadius: 1,
-                                            blurRadius: 4,
-                                          ),
-                                        ],
+                            );
+                          } else if (snapshot.hasError) {
+                            return Padding(
+                              padding:
+                                  EdgeInsets.only(top: screenHeight * 0.02),
+                              child: Text(
+                                '${snapshot.error}.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 13 * (screenWidth / 360),
+                                ),
+                              ),
+                            );
+                          } else {
+                            List<SpecialityDt> filteredData = snapshot.data!
+                                .where((item) => item.detail
+                                    .toString()
+                                    .toLowerCase()
+                                    .contains(
+                                        searchController.text.toLowerCase()))
+                                .toList();
+
+                            if (filteredData.isEmpty) {
+                              return Padding(
+                                padding:
+                                    EdgeInsets.only(top: screenHeight * 0.03),
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                        height: screenHeight * 0.3,
+                                        child: Image.asset(
+                                          'images/noresult.png',
+                                          fit: BoxFit.fill,
+                                        )),
+                                    Text(
+                                      'Sorry! No Data Found',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14 * (screenWidth / 360),
+                                        color: Colors.red.shade500,
                                       ),
-                                      child: Padding(
-                                        padding:
-                                            EdgeInsets.all(screenWidth * 0.01),
-                                        child: Column(
-                                          children: [
-                                            Expanded(
-                                              child: SizedBox(
-                                                child: Image.asset(
-                                                    'images/speciality.png'),
+                                    )
+                                  ],
+                                ),
+                              );
+                            } else {
+                              return SizedBox(
+                                height: screenHeight * 0.67,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      right: screenWidth * 0.02),
+                                  child: Scrollbar(
+                                    controller: _scrollController,
+                                    thumbVisibility: true,
+                                    scrollbarOrientation:
+                                        ScrollbarOrientation.right,
+                                    thickness: 5,
+                                    radius: Radius.circular(5),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: screenWidth * 0.02),
+                                      child: GridView.builder(
+                                        controller: _scrollController,
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 3,
+                                          crossAxisSpacing: screenWidth * 0.01,
+                                          mainAxisSpacing: screenHeight * 0.001,
+                                        ),
+                                        itemCount: filteredData.length,
+                                        itemBuilder: (context, index) {
+                                          return Padding(
+                                            padding: EdgeInsets.all(
+                                                screenWidth * 0.02),
+                                            child: InkWell(
+                                              onTap: () {
+                                                Navigator.pushNamed(
+                                                    context, '/Doctors');
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          screenWidth * 0.03),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black
+                                                          .withOpacity(0.2),
+                                                      offset: Offset(1, 1),
+                                                      spreadRadius: 1,
+                                                      blurRadius: 4,
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(
+                                                      screenWidth * 0.01),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      SizedBox(
+                                                        height:
+                                                            screenHeight * 0.07,
+                                                        child: FadeInImage(
+                                                          placeholder: AssetImage(
+                                                              'images/speciality/non.png'),
+                                                          image: AssetImage(
+                                                              'images/speciality/${filteredData[index].spId}.png'),
+                                                          fit: BoxFit.fill,
+                                                          imageErrorBuilder:
+                                                              (context, error,
+                                                                  stackTrace) {
+                                                            return Image.asset(
+                                                                'images/speciality/non.png');
+                                                          },
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          filteredData[index]
+                                                              .detail
+                                                              .toString(),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                            Text(
-                                              'Orthopedic Implants',
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ],
-                                        ),
+                                          );
+                                        },
                                       ),
                                     ),
                                   ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                                ),
+                              );
+                            }
+                          }
+                        })
                   ],
                 ),
               ),
