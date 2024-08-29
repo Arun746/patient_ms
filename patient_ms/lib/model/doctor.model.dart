@@ -25,7 +25,7 @@ class DoctorDt {
   bool? refering;
   bool? consult;
   bool? doctor;
-  int? rate;
+  double? rate;
   String? email;
   bool? appointment;
   bool? radiologist;

@@ -2,7 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:patient_ms/model/doctor.model.dart';
 import 'package:patient_ms/model/speciality.model.dart';
+import 'package:patient_ms/screen/bookappointment.screen.dart';
+import 'package:patient_ms/services/doctor.service.dart';
 import 'package:patient_ms/services/speciality.services.dart';
 
 class Appointment extends StatefulWidget {
@@ -18,15 +21,18 @@ class _AppointmentState extends State<Appointment>
   late TabController _tabController;
   int currentTabIndex = 0;
   late TextEditingController searchController;
+  late TextEditingController docSearchController;
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
   final ScrollController _scrollController = ScrollController();
+  final ScrollController _dscrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     searchController = TextEditingController();
+    docSearchController = TextEditingController();
     _tabController.addListener(() {
       currentTabIndex = _tabController.index;
     });
@@ -47,6 +53,8 @@ class _AppointmentState extends State<Appointment>
   @override
   void dispose() {
     _tabController.dispose();
+    searchController.dispose();
+    docSearchController.dispose();
     super.dispose();
   }
 
@@ -316,8 +324,10 @@ class _AppointmentState extends State<Appointment>
                         borderRadius: BorderRadius.circular(screenWidth * 0.05),
                       ),
                       child: TextField(
-                        controller: searchController,
-                        onChanged: (query) {},
+                        controller: docSearchController,
+                        onChanged: (query) {
+                          docSearchController.text = query;
+                        },
                         decoration: InputDecoration(
                           contentPadding: EdgeInsetsDirectional.symmetric(
                               vertical: 0.015 * screenHeight),
@@ -328,26 +338,103 @@ class _AppointmentState extends State<Appointment>
                       ),
                     ),
                     //dlist
-                    SizedBox(
-                      height: screenHeight * 0.67,
-                      child: Padding(
-                        padding: EdgeInsets.only(right: screenWidth * 0.02),
-                        child: Scrollbar(
-                          controller: _scrollController,
-                          thumbVisibility: true,
-                          scrollbarOrientation: ScrollbarOrientation.right,
-                          thickness: 5,
-                          radius: Radius.circular(5),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                for (int i = 0; i < 8; i++) _doctorlist(i),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                    FutureBuilder<List<DoctorDt>>(
+                        future: DoctorService.getData(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<List<DoctorDt>> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Padding(
+                              padding: EdgeInsets.only(top: screenHeight * 0.2),
+                              child: Column(
+                                children: [
+                                  const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Color.fromARGB(255, 78, 131, 187),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: screenHeight * 0.02),
+                                    child: const Text('Loading...'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Padding(
+                              padding:
+                                  EdgeInsets.only(top: screenHeight * 0.02),
+                              child: Text(
+                                '${snapshot.error}.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 13 * (screenWidth / 360),
+                                ),
+                              ),
+                            );
+                          } else {
+                            List<DoctorDt> filteredData = snapshot.data!
+                                .where((item) => item.doctor
+                                    .toString()
+                                    .toLowerCase()
+                                    .contains(
+                                        docSearchController.text.toLowerCase()))
+                                .toList();
+
+                            if (filteredData.isEmpty) {
+                              return Padding(
+                                padding:
+                                    EdgeInsets.only(top: screenHeight * 0.03),
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                        height: screenHeight * 0.3,
+                                        child: Image.asset(
+                                          'images/noresult.png',
+                                          fit: BoxFit.fill,
+                                        )),
+                                    Text(
+                                      'Sorry! No Data Found',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14 * (screenWidth / 360),
+                                        color: Colors.red.shade500,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            } else {
+                              return SizedBox(
+                                height: screenHeight * 0.67,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      right: screenWidth * 0.02),
+                                  child: Scrollbar(
+                                    controller: _dscrollController,
+                                    thumbVisibility: true,
+                                    scrollbarOrientation:
+                                        ScrollbarOrientation.right,
+                                    thickness: 5,
+                                    radius: Radius.circular(5),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: screenWidth * 0.02),
+                                      child: ListView.builder(
+                                        controller: _dscrollController,
+                                        itemCount: filteredData.length,
+                                        itemBuilder: (context, index) {
+                                          final data = filteredData[index];
+                                          return _doctorlist(data);
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                        })
                   ],
                 ),
               ),
@@ -390,11 +477,12 @@ class _AppointmentState extends State<Appointment>
     );
   }
 
-  Widget _doctorlist(int i) {
+  Widget _doctorlist(DoctorDt data) {
     return GestureDetector(
       child: InkWell(
         onTap: () {
-          Navigator.pushNamed(context, '/BookAppointment');
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => BookAppointment(docData: data)));
         },
         child: ListTile(
           title: Container(
@@ -451,13 +539,13 @@ class _AppointmentState extends State<Appointment>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Dr. Doctor Name',
+                        data.referer.toString(),
                         style: TextStyle(
                             color: Color.fromARGB(255, 3, 58, 80),
-                            fontSize: 16 * (screenWidth / 360)),
+                            fontSize: 14 * (screenWidth / 360)),
                       ),
                       Text(
-                        'Speciality',
+                        data.qualification.toString(),
                         style: TextStyle(
                             color: Color.fromARGB(255, 26, 30, 31),
                             fontSize: 14 * (screenWidth / 360)),

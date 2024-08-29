@@ -1,11 +1,13 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:patient_ms/model/doctor.model.dart';
 
 import 'package:table_calendar/table_calendar.dart';
 
 class BookAppointment extends StatefulWidget {
-  const BookAppointment({super.key});
+  final DoctorDt docData;
+  const BookAppointment({super.key, required this.docData});
 
   @override
   State<BookAppointment> createState() => _BookAppointmentState();
@@ -86,7 +88,7 @@ class _BookAppointmentState extends State<BookAppointment> {
                           padding: EdgeInsets.symmetric(
                               vertical: screenHeight * 0.001),
                           child: Text(
-                            'Dr Rajendra Khanal',
+                            widget.docData.referer.toString(),
                             style: TextStyle(
                               fontSize: (screenWidth / 360) * 18,
                               fontWeight: FontWeight.w500,

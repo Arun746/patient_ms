@@ -62,295 +62,291 @@ class _HomeState extends State<Home> {
           return true;
         }
       },
-      child: SafeArea(
-        child: Scaffold(
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: screenHeight * 0.01,
-                ),
-                //profile
-                Row(
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        width: screenWidth * 0.3,
-                        child: Image.asset('images/profile.png'),
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'User Profile Name',
-                          style: TextStyle(fontSize: 18 * (screenWidth / 360)),
-                        ),
-                        Text(
-                          '#7267147',
-                          style: TextStyle(fontSize: 15 * (screenWidth / 360)),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: screenWidth * 0.13),
-                          child: PopupMenuButton(
-                            icon: Icon(
-                              Icons.more_vert,
-                              size: 25 * (screenWidth / 360),
-                            ),
-                            itemBuilder: (BuildContext context) {
-                              return [
-                                PopupMenuItem<String>(
-                                  onTap: () {},
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.person),
-                                      SizedBox(width: screenWidth * 0.04),
-                                      Text('Profile'),
-                                    ],
-                                  ),
-                                ),
-                                PopupMenuItem<String>(
-                                  onTap: () {
-                                    Navigator.pushNamed(
-                                        context, '/Appointment');
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.calendar_month),
-                                      SizedBox(width: screenWidth * 0.04),
-                                      Text('Appoinment'),
-                                    ],
-                                  ),
-                                ),
-                                PopupMenuItem<String>(
-                                  onTap: () {},
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.medical_services_outlined),
-                                      SizedBox(width: screenWidth * 0.04),
-                                      Text('Medication'),
-                                    ],
-                                  ),
-                                ),
-                                PopupMenuItem<String>(
-                                  onTap: () {
-                                    Navigator.pushNamedAndRemoveUntil(context,
-                                        '/SelectUser', (route) => false);
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.switch_account_rounded),
-                                      SizedBox(width: screenWidth * 0.04),
-                                      Text('Switch Profile'),
-                                    ],
-                                  ),
-                                ),
-                                PopupMenuItem<String>(
-                                  onTap: () {
-                                    Navigator.pushNamedAndRemoveUntil(
-                                        context, '/Login', (route) => false);
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.logout),
-                                      SizedBox(width: screenWidth * 0.04),
-                                      Text('Logout'),
-                                    ],
-                                  ),
-                                ),
-                              ];
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-                //bookappointment
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  child: Container(
-                    height: screenHeight * 0.2,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 223, 234, 237),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: screenHeight * 0.01,
-                            horizontal: screenWidth * 0.02,
-                          ),
-                          child: Text(
-                            'With Just One Click Book Your Appointment And Make Your Checkup Easy',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Color.fromARGB(255, 4, 85, 106),
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/Appointment');
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Color.fromARGB(255, 255, 255, 255),
-                            backgroundColor: Color.fromARGB(255, 4, 85, 106),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: screenWidth * 0.1,
-                                vertical: screenHeight * 0.01),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18),
-                            ),
-                          ),
-                          child: Text(
-                            'Book Now',
-                            style: TextStyle(
-                              fontSize: 15 * (screenWidth / 360),
-                            ),
-                          ),
-                        )
-                      ],
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: screenHeight * 0.01,
+              ),
+              //profile
+              Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      width: screenWidth * 0.3,
+                      child: Image.asset('images/profile.png'),
                     ),
                   ),
-                ),
-                //svrcsheading
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: screenWidth * 0.04, top: screenHeight * 0.02),
-                  child: Text(
-                    'Other Services',
-                    style: TextStyle(
-                        fontSize: 17 * (screenWidth / 360),
-                        color: const Color.fromRGBO(24, 97, 121, 0.8),
-                        fontWeight: FontWeight.w500),
-                  ),
-                ),
-                //svrcs
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: screenWidth * 0.025),
-                  child: SizedBox(
-                    height: screenHeight * 0.5,
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: screenWidth * 0.01,
-                        mainAxisSpacing: screenHeight * 0.001,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'User Profile Name',
+                        style: TextStyle(fontSize: 18 * (screenWidth / 360)),
                       ),
-                      itemCount: 4,
-                      itemBuilder: (context, index) {
-                        final dataList = [
-                          {
-                            'image': 'images/medication.png',
-                            'text': 'Medication',
-                            'onTap': () {
-                              _alertSnackbar(
-                                  "This feature will be available soon");
-                            }
-                          },
-                          {
-                            'image': 'images/report.png',
-                            'text': 'Reports',
-                            'onTap': () {
-                              _alertSnackbar(
-                                  "This feature will be available soon");
-                            }
-                          },
-                          {
-                            'image': 'images/vitals.png',
-                            'text': 'Vitals',
-                            'onTap': () {
-                              _alertSnackbar(
-                                  "This feature will be available soon");
-                            }
-                          },
-                          {
-                            'image': 'images/welness.png',
-                            'text': 'Wellness Plan',
-                            'onTap': () {
-                              _alertSnackbar(
-                                  "This feature will be available soon");
-                            }
-                          },
-                        ];
-                        final data = dataList[index];
-                        return InkWell(
-                          onTap: data['onTap'] as VoidCallback,
-                          child: Card(
-                            elevation: 0,
-                            color: Color.fromARGB(255, 223, 234, 237),
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(screenWidth * 0.03),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.all(screenWidth * 0.01),
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    height: screenHeight * 0.17,
-                                    child: Image.asset(
-                                      data['image'] as String,
-                                    ),
-                                  ),
-                                  Text(
-                                    data['text'] as String,
-                                    style: TextStyle(
-                                        fontSize: 16 * (screenWidth / 360)),
-                                  ),
-                                ],
+                      Text(
+                        '#7267147',
+                        style: TextStyle(fontSize: 15 * (screenWidth / 360)),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: screenWidth * 0.13),
+                        child: PopupMenuButton(
+                          icon: Icon(
+                            Icons.more_vert,
+                            size: 25 * (screenWidth / 360),
+                          ),
+                          itemBuilder: (BuildContext context) {
+                            return [
+                              PopupMenuItem<String>(
+                                onTap: () {},
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.person),
+                                    SizedBox(width: screenWidth * 0.04),
+                                    Text('Profile'),
+                                  ],
+                                ),
                               ),
-                            ),
+                              PopupMenuItem<String>(
+                                onTap: () {
+                                  Navigator.pushNamed(context, '/Appointment');
+                                },
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.calendar_month),
+                                    SizedBox(width: screenWidth * 0.04),
+                                    Text('Appoinment'),
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem<String>(
+                                onTap: () {},
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.medical_services_outlined),
+                                    SizedBox(width: screenWidth * 0.04),
+                                    Text('Medication'),
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem<String>(
+                                onTap: () {
+                                  Navigator.pushNamedAndRemoveUntil(
+                                      context, '/SelectUser', (route) => false);
+                                },
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.switch_account_rounded),
+                                    SizedBox(width: screenWidth * 0.04),
+                                    Text('Switch Profile'),
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem<String>(
+                                onTap: () {
+                                  Navigator.pushNamedAndRemoveUntil(
+                                      context, '/Login', (route) => false);
+                                },
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.logout),
+                                    SizedBox(width: screenWidth * 0.04),
+                                    Text('Logout'),
+                                  ],
+                                ),
+                              ),
+                            ];
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+              //bookappointment
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                child: Container(
+                  height: screenHeight * 0.2,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 223, 234, 237),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: screenHeight * 0.01,
+                          horizontal: screenWidth * 0.02,
+                        ),
+                        child: Text(
+                          'With Just One Click Book Your Appointment And Make Your Checkup Easy',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Color.fromARGB(255, 4, 85, 106),
                           ),
-                        );
-                      },
-                    ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/Appointment');
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Color.fromARGB(255, 255, 255, 255),
+                          backgroundColor: Color.fromARGB(255, 4, 85, 106),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.1,
+                              vertical: screenHeight * 0.01),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        child: Text(
+                          'Book Now',
+                          style: TextStyle(
+                            fontSize: 15 * (screenWidth / 360),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ),
-          //bottombar
-          bottomNavigationBar: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            iconSize: 25,
-            backgroundColor: const Color.fromRGBO(24, 97, 121, 0.8),
-            selectedItemColor: Color.fromARGB(255, 1, 235, 211),
-            unselectedItemColor: Colors.white,
-            showSelectedLabels: true,
-            showUnselectedLabels: false,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
               ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.medication),
-                label: 'Medication',
+              //svrcsheading
+              Padding(
+                padding: EdgeInsets.only(
+                    left: screenWidth * 0.04, top: screenHeight * 0.02),
+                child: Text(
+                  'Other Services',
+                  style: TextStyle(
+                      fontSize: 17 * (screenWidth / 360),
+                      color: const Color.fromRGBO(24, 97, 121, 0.8),
+                      fontWeight: FontWeight.w500),
+                ),
               ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_month),
-                label: 'Appoinment',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.more_vert),
-                label: 'More',
+              //svrcs
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.025),
+                child: SizedBox(
+                  height: screenHeight * 0.5,
+                  child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: screenWidth * 0.01,
+                      mainAxisSpacing: screenHeight * 0.001,
+                    ),
+                    itemCount: 4,
+                    itemBuilder: (context, index) {
+                      final dataList = [
+                        {
+                          'image': 'images/medication.png',
+                          'text': 'Medication',
+                          'onTap': () {
+                            _alertSnackbar(
+                                "This feature will be available soon");
+                          }
+                        },
+                        {
+                          'image': 'images/report.png',
+                          'text': 'Reports',
+                          'onTap': () {
+                            _alertSnackbar(
+                                "This feature will be available soon");
+                          }
+                        },
+                        {
+                          'image': 'images/vitals.png',
+                          'text': 'Vitals',
+                          'onTap': () {
+                            _alertSnackbar(
+                                "This feature will be available soon");
+                          }
+                        },
+                        {
+                          'image': 'images/welness.png',
+                          'text': 'Wellness Plan',
+                          'onTap': () {
+                            _alertSnackbar(
+                                "This feature will be available soon");
+                          }
+                        },
+                      ];
+                      final data = dataList[index];
+                      return InkWell(
+                        onTap: data['onTap'] as VoidCallback,
+                        child: Card(
+                          elevation: 0,
+                          color: Color.fromARGB(255, 223, 234, 237),
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(screenWidth * 0.03),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(screenWidth * 0.01),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: screenHeight * 0.17,
+                                  child: Image.asset(
+                                    data['image'] as String,
+                                  ),
+                                ),
+                                Text(
+                                  data['text'] as String,
+                                  style: TextStyle(
+                                      fontSize: 16 * (screenWidth / 360)),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
             ],
-            currentIndex: _selectedIndex,
-            // selectedItemColor: Colors.black,
-            onTap: onTabTapped,
           ),
+        ),
+        //bottombar
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          iconSize: 25,
+          backgroundColor: const Color.fromRGBO(24, 97, 121, 0.8),
+          selectedItemColor: Color.fromARGB(255, 1, 235, 211),
+          unselectedItemColor: Colors.white,
+          showSelectedLabels: true,
+          showUnselectedLabels: false,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.medication),
+              label: 'Medication',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_month),
+              label: 'Appoinment',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.more_vert),
+              label: 'More',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          // selectedItemColor: Colors.black,
+          onTap: onTabTapped,
         ),
       ),
     );
