@@ -1,10 +1,16 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:patient_ms/model/doctor.model.dart';
 import 'package:patient_ms/screen/appointment.screen.dart';
+import 'package:patient_ms/screen/bookappointment.screen.dart';
+import 'package:patient_ms/services/doctor.service.dart';
 
 class DoctorList extends StatefulWidget {
-  const DoctorList({super.key});
+  final int? spId;
+  final String? detail;
+  const DoctorList({super.key, required this.spId, required this.detail});
 
   @override
   State<DoctorList> createState() => _DoctorListState();
@@ -20,6 +26,12 @@ class _DoctorListState extends State<DoctorList> {
   void initState() {
     super.initState();
     searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -51,7 +63,7 @@ class _DoctorListState extends State<DoctorList> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  'Choosen Speciality',
+                  widget.detail.toString(),
                   style: TextStyle(color: Colors.white),
                 ),
                 SizedBox(width: 10), // Space between texts
@@ -64,49 +76,122 @@ class _DoctorListState extends State<DoctorList> {
           child: Column(
             children: [
               //search
-              Container(
-                height: screenHeight * 0.055,
-                margin: EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.03,
-                    vertical: screenHeight * 0.02),
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 221, 234, 238),
-                  borderRadius: BorderRadius.circular(screenWidth * 0.05),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: screenWidth * 0.02,
                 ),
-                child: TextField(
-                  controller: searchController,
-                  onChanged: (query) {},
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsetsDirectional.symmetric(
-                        vertical: 0.015 * screenHeight),
-                    prefixIcon: Icon(Icons.search),
-                    hintText: 'Search doctors here',
-                    border: InputBorder.none,
+                child: Container(
+                  height: screenHeight * 0.055,
+                  margin: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.03,
+                      vertical: screenHeight * 0.005),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 221, 234, 238),
+                    borderRadius: BorderRadius.circular(screenWidth * 0.05),
                   ),
-                ),
-              ),
-              //dlist
-              SizedBox(
-                height: screenHeight * 0.77,
-                child: Padding(
-                  padding: EdgeInsets.only(right: screenWidth * 0.02),
-                  child: Scrollbar(
-                    controller: _scrollController,
-                    thumbVisibility: true,
-                    scrollbarOrientation: ScrollbarOrientation.right,
-                    thickness: 5,
-                    radius: Radius.circular(5),
-                    child: SingleChildScrollView(
-                      controller: _scrollController,
-                      child: Column(
-                        children: [
-                          for (int i = 0; i < 10; i++) _list(i),
-                        ],
-                      ),
+                  child: TextField(
+                    controller: searchController,
+                    onChanged: (query) {
+                      searchController.text = query;
+                    },
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsetsDirectional.symmetric(
+                          vertical: 0.015 * screenHeight),
+                      prefixIcon: Icon(Icons.search),
+                      hintText: 'Search doctors here',
+                      border: InputBorder.none,
                     ),
                   ),
                 ),
               ),
+              //dlist
+              FutureBuilder<List<DoctorDt>>(
+                  future: DoctorService.getData(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<DoctorDt>> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Padding(
+                        padding: EdgeInsets.only(top: screenHeight * 0.2),
+                        child: Column(
+                          children: [
+                            const Center(
+                              child: CircularProgressIndicator(
+                                color: Color.fromARGB(255, 78, 131, 187),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(top: screenHeight * 0.02),
+                              child: const Text('Loading...'),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Padding(
+                        padding: EdgeInsets.only(top: screenHeight * 0.02),
+                        child: Text(
+                          '${snapshot.error}.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 13 * (screenWidth / 360),
+                          ),
+                        ),
+                      );
+                    } else {
+                      List<DoctorDt> filteredData = snapshot.data!
+                          .where((item) =>
+                              item.spId == widget.spId &&
+                              item.referer.toString().toLowerCase().contains(
+                                  searchController.text.toLowerCase()))
+                          .toList();
+
+                      if (filteredData.isEmpty) {
+                        return Padding(
+                          padding: EdgeInsets.only(top: screenHeight * 0.03),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                  height: screenHeight * 0.3,
+                                  child: Image.asset(
+                                    'images/noresult.png',
+                                    fit: BoxFit.fill,
+                                  )),
+                              Text(
+                                'Sorry! No Data Found',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14 * (screenWidth / 360),
+                                  color: Colors.red.shade500,
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      } else {
+                        return SizedBox(
+                          height: screenHeight * 0.77,
+                          child: Padding(
+                            padding: EdgeInsets.only(right: screenWidth * 0.02),
+                            child: Scrollbar(
+                              controller: _scrollController,
+                              thumbVisibility: true,
+                              scrollbarOrientation: ScrollbarOrientation.right,
+                              thickness: 5,
+                              radius: Radius.circular(5),
+                              child: ListView.builder(
+                                controller: _scrollController,
+                                itemCount: filteredData.length,
+                                itemBuilder: (context, index) {
+                                  final data = filteredData[index];
+                                  return _doctorlist(data);
+                                },
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                    }
+                  })
             ],
           ),
         ),
@@ -114,11 +199,12 @@ class _DoctorListState extends State<DoctorList> {
     );
   }
 
-  Widget _list(int i) {
+  Widget _doctorlist(DoctorDt data) {
     return GestureDetector(
       child: InkWell(
         onTap: () {
-          Navigator.pushNamed(context, '/BookAppointment');
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => BookAppointment(docData: data)));
         },
         child: ListTile(
           title: Container(
@@ -175,18 +261,16 @@ class _DoctorListState extends State<DoctorList> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Dr. Doctor Name',
+                        data.referer.toString(),
                         style: TextStyle(
-                          color: Color.fromARGB(255, 3, 58, 80),
-                          fontSize: 15 * (screenWidth / 360),
-                        ),
+                            color: Color.fromARGB(255, 3, 58, 80),
+                            fontSize: 14 * (screenWidth / 360)),
                       ),
                       Text(
-                        'Speciality',
+                        data.qualification.toString(),
                         style: TextStyle(
-                          color: Color.fromARGB(255, 26, 30, 31),
-                          fontSize: 13.5 * (screenWidth / 360),
-                        ),
+                            color: Color.fromARGB(255, 26, 30, 31),
+                            fontSize: 14 * (screenWidth / 360)),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -195,15 +279,15 @@ class _DoctorListState extends State<DoctorList> {
                             'Book An Appointment',
                             style: TextStyle(
                               color: const Color.fromARGB(255, 236, 3, 3),
-                              fontSize: 12.5 * (screenWidth / 360),
+                              fontSize: 13 * (screenWidth / 360),
                             ),
                           ),
-                          SizedBox(width: 10),
+                          SizedBox(width: screenWidth * 0.01),
                           Icon(
                             Icons.arrow_forward,
                             color: const Color.fromARGB(255, 240, 6, 6),
                             size: screenWidth * 0.045,
-                          ),
+                          )
                         ],
                       ),
                     ],

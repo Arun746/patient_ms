@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:patient_ms/model/doctor.model.dart';
 import 'package:patient_ms/model/speciality.model.dart';
 import 'package:patient_ms/screen/bookappointment.screen.dart';
+import 'package:patient_ms/screen/doctorslist.screen.dart';
 import 'package:patient_ms/services/doctor.service.dart';
 import 'package:patient_ms/services/speciality.services.dart';
 
@@ -238,8 +239,18 @@ class _AppointmentState extends State<Appointment>
                                                 screenWidth * 0.02),
                                             child: InkWell(
                                               onTap: () {
-                                                Navigator.pushNamed(
-                                                    context, '/Doctors');
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder:
+                                                            (context) =>
+                                                                DoctorList(
+                                                                  spId: filteredData[
+                                                                          index]
+                                                                      .spId,
+                                                                  detail: filteredData[
+                                                                          index]
+                                                                      .detail,
+                                                                )));
                                               },
                                               child: Container(
                                                 decoration: BoxDecoration(
@@ -375,7 +386,7 @@ class _AppointmentState extends State<Appointment>
                             );
                           } else {
                             List<DoctorDt> filteredData = snapshot.data!
-                                .where((item) => item.doctor
+                                .where((item) => item.referer
                                     .toString()
                                     .toLowerCase()
                                     .contains(
