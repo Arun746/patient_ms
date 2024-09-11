@@ -8,7 +8,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:patient_ms/screen/userselect.screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Lock the orientation
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
     MyApp(),
   );

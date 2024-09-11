@@ -229,8 +229,8 @@ class _AppointmentState extends State<Appointment>
                                         gridDelegate:
                                             SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 3,
-                                          crossAxisSpacing: screenWidth * 0.01,
-                                          mainAxisSpacing: screenHeight * 0.001,
+                                          crossAxisSpacing: screenWidth * 0.05,
+                                          mainAxisSpacing: screenHeight * 0.01,
                                         ),
                                         itemCount: filteredData.length,
                                         itemBuilder: (context, index) {
@@ -263,7 +263,7 @@ class _AppointmentState extends State<Appointment>
                                                       color: Colors.black
                                                           .withOpacity(0.2),
                                                       offset: Offset(1, 1),
-                                                      spreadRadius: 1,
+                                                      spreadRadius: 2,
                                                       blurRadius: 4,
                                                     ),
                                                   ],
@@ -277,8 +277,8 @@ class _AppointmentState extends State<Appointment>
                                                             .spaceBetween,
                                                     children: [
                                                       SizedBox(
-                                                        height:
-                                                            screenHeight * 0.07,
+                                                        height: screenHeight *
+                                                            0.052,
                                                         child: FadeInImage(
                                                           placeholder: AssetImage(
                                                               'images/speciality/non.png'),
@@ -293,13 +293,23 @@ class _AppointmentState extends State<Appointment>
                                                           },
                                                         ),
                                                       ),
+                                                      SizedBox(
+                                                        height: screenHeight *
+                                                            0.005,
+                                                      ),
                                                       Expanded(
                                                         child: Text(
                                                           filteredData[index]
-                                                              .detail
-                                                              .toString(),
+                                                                      .detail ==
+                                                                  ""
+                                                              ? "N/A"
+                                                              : filteredData[
+                                                                      index]
+                                                                  .detail
+                                                                  .toString(),
                                                           textAlign:
                                                               TextAlign.center,
+                                                          style: TextStyle(),
                                                         ),
                                                       ),
                                                     ],

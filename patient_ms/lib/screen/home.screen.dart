@@ -172,22 +172,23 @@ class _HomeState extends State<Home> {
               ),
               //bookappointment
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12),
+                padding: EdgeInsets.symmetric(
+                  horizontal: screenWidth * 0.02,
+                ),
                 child: Container(
-                  height: screenHeight * 0.2,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 223, 234, 237),
+                    color: Color.fromARGB(255, 223, 235, 247),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: screenHeight * 0.01,
-                          horizontal: screenWidth * 0.02,
-                        ),
-                        child: Text(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.02,
+                        vertical: screenHeight * 0.02),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text(
                           'With Just One Click Book Your Appointment And Make Your Checkup Easy',
                           style: TextStyle(
                             fontSize: 18,
@@ -195,29 +196,29 @@ class _HomeState extends State<Home> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/Appointment');
-                        },
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Color.fromARGB(255, 255, 255, 255),
-                          backgroundColor: Color.fromARGB(255, 4, 85, 106),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: screenWidth * 0.1,
-                              vertical: screenHeight * 0.01),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/Appointment');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Color.fromARGB(255, 255, 255, 255),
+                            backgroundColor: Color.fromARGB(255, 4, 85, 106),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.1,
+                                vertical: screenHeight * 0.01),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18),
+                            ),
                           ),
-                        ),
-                        child: Text(
-                          'Book Now',
-                          style: TextStyle(
-                            fontSize: 15 * (screenWidth / 360),
+                          child: Text(
+                            'Book Now',
+                            style: TextStyle(
+                              fontSize: 15 * (screenWidth / 360),
+                            ),
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -235,14 +236,14 @@ class _HomeState extends State<Home> {
               ),
               //svrcs
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.025),
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
                 child: SizedBox(
                   height: screenHeight * 0.5,
                   child: GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      crossAxisSpacing: screenWidth * 0.01,
-                      mainAxisSpacing: screenHeight * 0.001,
+                      crossAxisSpacing: screenWidth * 0.04,
+                      mainAxisSpacing: screenHeight * 0.04,
                     ),
                     itemCount: 4,
                     itemBuilder: (context, index) {
@@ -284,8 +285,9 @@ class _HomeState extends State<Home> {
                       return InkWell(
                         onTap: data['onTap'] as VoidCallback,
                         child: Card(
-                          elevation: 0,
-                          color: Color.fromARGB(255, 223, 234, 237),
+                          shadowColor: Color.fromARGB(255, 6, 27, 32),
+                          elevation: 1,
+                          color: Color.fromARGB(255, 233, 245, 249),
                           shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.circular(screenWidth * 0.03),
@@ -293,9 +295,10 @@ class _HomeState extends State<Home> {
                           child: Padding(
                             padding: EdgeInsets.all(screenWidth * 0.01),
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 SizedBox(
-                                  height: screenHeight * 0.17,
+                                  height: screenHeight * 0.12,
                                   child: Image.asset(
                                     data['image'] as String,
                                   ),
