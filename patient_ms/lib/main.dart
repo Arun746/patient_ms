@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:patient_ms/screen/appointment.screen.dart';
-import 'package:patient_ms/screen/bookconfirm.screen.dart';
 import 'package:patient_ms/screen/home.screen.dart';
 import 'package:patient_ms/screen/login.screen.dart';
 import 'package:flutter/services.dart';
@@ -39,7 +38,6 @@ class _MyAppState extends State<MyApp> {
         '/Home': (BuildContext context) => const Home(),
         '/SelectUser': (BuildContext context) => const SelectUser(),
         '/Appointment': (BuildContext context) => const Appointment(),
-        '/BookPayment': (BuildContext context) => const BookPayment(),
       },
       debugShowCheckedModeBanner: false,
     );

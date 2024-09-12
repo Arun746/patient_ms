@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:patient_ms/config/config.dart';
 import 'package:patient_ms/model/doctor.model.dart';
+import 'package:patient_ms/screen/bookconfirm.screen.dart';
 
 import 'package:table_calendar/table_calendar.dart';
 
@@ -16,7 +18,8 @@ class BookAppointment extends StatefulWidget {
 class _BookAppointmentState extends State<BookAppointment> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
-  int? _selectedTime;
+  int? _selectedTimeIndex;
+  String? _selectedTime;
   DateTime _focusedDay = DateTime.now();
   late DateTime _selectedDay;
   final ScrollController _scrollController = ScrollController();
@@ -61,7 +64,7 @@ class _BookAppointmentState extends State<BookAppointment> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   // color: Colors.white,
-                  color: Color.fromARGB(223, 233, 249, 249),
+                  color: Config.primaryCardColor,
                   boxShadow: [
                     BoxShadow(
                       color:
@@ -180,7 +183,7 @@ class _BookAppointmentState extends State<BookAppointment> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
               child: Container(
-                color: Color.fromARGB(255, 206, 246, 245),
+                color: Config.primaryCardColor,
                 child: TableCalendar(
                   firstDay: DateTime.now(),
                   lastDay: DateTime(2025),
@@ -194,12 +197,12 @@ class _BookAppointmentState extends State<BookAppointment> {
                     //  backgroundColor: Colors.blue,
                     // titleStyle: TextStyle(color: Colors.white),
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 174, 230, 234),
+                      color: Config.primaryCardColor,
                     ),
                   ),
                   calendarStyle: CalendarStyle(
                     rowDecoration: BoxDecoration(
-                      color: Color.fromARGB(255, 206, 246, 245),
+                      color: Config.primaryCardColor,
                     ),
                   ),
                   calendarFormat: CalendarFormat.month,
@@ -216,7 +219,7 @@ class _BookAppointmentState extends State<BookAppointment> {
                       margin: EdgeInsets.all(screenWidth * 0.01),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 239, 92, 81),
+                        color: const Color.fromRGBO(24, 97, 121, 0.8),
                         shape: BoxShape.circle,
                       ),
                       child: Text(
@@ -288,45 +291,55 @@ class _BookAppointmentState extends State<BookAppointment> {
                   thickness: screenWidth * 0.015,
                   radius: Radius.circular(5),
                   child: Padding(
-                    padding: EdgeInsets.only(
-                      left: screenWidth * 0.02,
-                      right: screenWidth * 0.04,
-                    ),
-                    child: GridView.builder(
-                      controller: _scrollController,
-                      shrinkWrap: true,
-                      // physics: NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: screenWidth * 0.04,
-                        mainAxisSpacing: screenHeight * 0.02,
-                        childAspectRatio: 4.2 / 1.5,
+                      padding: EdgeInsets.only(
+                        left: screenWidth * 0.02,
+                        right: screenWidth * 0.04,
                       ),
-                      itemCount: 15,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _selectedTime =
-                                  _selectedTime == index ? null : index;
-                            });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
+                      child: GridView.builder(
+                        controller: _scrollController,
+                        shrinkWrap: true,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: screenWidth * 0.04,
+                          mainAxisSpacing: screenHeight * 0.02,
+                          childAspectRatio: 4.2 / 1.5,
+                        ),
+                        itemCount:
+                            calculateTotalSlots(), // Function to calculate total slots
+                        itemBuilder: (context, index) {
+                          String time = calculateSlotTime(index);
+                          bool isSelected = _selectedTimeIndex == index;
+
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _selectedTimeIndex =
+                                    _selectedTimeIndex == index ? null : index;
+                                _selectedTime =
+                                    _selectedTime == time ? null : time;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
-                                color: _selectedTime == index
-                                    ? Color.fromARGB(255, 239, 75, 63)
-                                    : Color.fromARGB(255, 22, 189, 158)),
-                            child: Center(
+                                color: isSelected
+                                    ? const Color.fromRGBO(24, 97, 121, 0.8)
+                                    : Config.primaryCardColor,
+                              ),
+                              child: Center(
                                 child: Text(
-                              '10:00 AM',
-                              style: TextStyle(color: Colors.white),
-                            )),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                                  time,
+                                  style: TextStyle(
+                                    color: isSelected
+                                        ? Colors.white
+                                        : Color.fromARGB(204, 3, 69, 91),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      )),
                 ),
               ),
             ),
@@ -348,7 +361,28 @@ class _BookAppointmentState extends State<BookAppointment> {
                     fixedSize: Size(screenWidth * 0.5, screenHeight * 0.055),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/BookPayment');
+                    if (_selectedTime != null && _selectedTime!.isNotEmpty) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => BookConfirm(
+                            docData: widget.docData,
+                            date: _selectedDay.toString(),
+                            time: _selectedTime!,
+                          ),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: Colors.red,
+                          duration: Duration(milliseconds: 100),
+                          content: Text(
+                            'Please select a time',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                    }
                   },
                   child: Text(
                     'Book Appointment',
@@ -366,5 +400,25 @@ class _BookAppointmentState extends State<BookAppointment> {
         ),
       ),
     );
+  }
+
+  int calculateTotalSlots() {
+    int startHour = 10;
+    int endHour = 17;
+    int durationInMinutes = 15;
+    int totalMinutes = (endHour - startHour) * 60;
+    return (totalMinutes / durationInMinutes).floor();
+  }
+
+  String calculateSlotTime(int index) {
+    int startHour = 10;
+    int durationInMinutes = 15;
+    int slotNumber = index % calculateTotalSlots();
+    int minutesSinceStart = slotNumber * durationInMinutes;
+
+    int hour = startHour + (minutesSinceStart ~/ 60);
+    int minute = minutesSinceStart % 60;
+
+    return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
   }
 }

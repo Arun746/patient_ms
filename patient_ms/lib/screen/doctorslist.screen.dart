@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:patient_ms/model/doctor.model.dart';
-import 'package:patient_ms/screen/appointment.screen.dart';
 import 'package:patient_ms/screen/bookappointment.screen.dart';
 import 'package:patient_ms/services/doctor.service.dart';
 
@@ -38,10 +37,7 @@ class _DoctorListState extends State<DoctorList> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const Appointment()),
-        );
+        Navigator.pop(context);
         return false;
       },
       child: Scaffold(
@@ -53,10 +49,7 @@ class _DoctorListState extends State<DoctorList> {
             leading: IconButton(
               icon: Icon(Icons.arrow_back_ios, color: Colors.white),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Appointment()),
-                );
+                Navigator.pop(context);
               },
             ),
             title: Row(
