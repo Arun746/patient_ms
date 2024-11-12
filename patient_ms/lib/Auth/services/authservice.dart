@@ -6,11 +6,49 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decode/jwt_decode.dart';
+import 'package:patient_ms/Auth/model/signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   static const String Url = 'http://192.168.15.126/medipro.api.Medipro';
 
+//REGISTRATION
+
+  //signup
+  static Future<int> signUp(SignUpModel user) async {
+    String apiURL = "$Url/api/userregister";
+    final uri = Uri.parse(apiURL);
+    String jsonBody = json.encode(user.toMap());
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+    var response = await http.post(
+      uri,
+      headers: headers,
+      body: jsonBody,
+    );
+    return response.statusCode;
+  }
+
+  //userstatus
+  static Future<bool> getUserStatus(String phone) async {
+    if (phone.length < 10) {
+      return true;
+    }
+    String apiURL = "$Url/api/userexists/$phone";
+    final uri = Uri.parse(apiURL);
+
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+    final response = await http.get(uri, headers: headers);
+    bool users = (json.decode(response.body));
+    return users;
+  }
+
+//LOGIN
   Future<Map<String, dynamic>> login(String username, String password) async {
     final encodedUsername = Uri.encodeComponent(username);
     final encodedPassword = Uri.encodeComponent(password);
@@ -43,7 +81,6 @@ class AuthService {
     }
   }
 
-//
   static Future<String?> parseToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -80,9 +117,6 @@ class AuthService {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.remove('token');
       await prefs.remove('userid');
-      // Navigator.pushReplacementNamed(context, '/Login');
-    } catch (e) {
-      // print('Error logging out: $e');
-    }
+    } catch (e) {}
   }
 }

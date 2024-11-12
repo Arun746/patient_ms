@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:patient_ms/screen/hospital.screen.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -276,8 +277,10 @@ class _HomeState extends State<Home> {
                           'image': 'images/welness.png',
                           'text': 'Wellness Plan',
                           'onTap': () {
-                            _alertSnackbar(
-                                "This feature will be available soon");
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => HospitalList()),
+                            );
                           }
                         },
                       ];

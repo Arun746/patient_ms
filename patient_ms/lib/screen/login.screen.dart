@@ -3,7 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:patient_ms/services/authservice.dart';
+import 'package:patient_ms/Auth/screen/registration.dart';
+import 'package:patient_ms/Auth/services/authservice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -62,6 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (responseJson.containsKey('access_token')) {
         String accessToken = responseJson['access_token'];
         await _storeToken(accessToken);
+        print(accessToken);
         context.loaderOverlay.hide();
         Navigator.pushNamed(context, '/Home');
         showSuccessToast('Logged In Successfully');
@@ -370,7 +372,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           Padding(
                             padding: const EdgeInsets.only(top: 0),
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) => SignUp()),
+                                );
+                              },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
                                     const Color.fromARGB(255, 255, 255, 255),
@@ -380,7 +387,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   screenHeight * 0.008,
                                 ),
                                 side: const BorderSide(
-                                  color: Colors.grey,
+                                  color: Color.fromARGB(255, 116, 111, 111),
                                   width: 1,
                                   style: BorderStyle.solid,
                                 ),
@@ -388,7 +395,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: Text(
                                 'Sign Up',
                                 style: TextStyle(
-                                    color: Colors.grey,
+                                    color: Color.fromARGB(255, 140, 136, 136),
                                     fontSize: 16 * (screenWidth / 360)),
                               ),
                             ),

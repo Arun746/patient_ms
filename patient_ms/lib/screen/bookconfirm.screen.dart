@@ -74,7 +74,6 @@ class _BookConfirmState extends State<BookConfirm> {
       }
       context.loaderOverlay.hide();
     } catch (e) {
-      context.loaderOverlay.hide();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
