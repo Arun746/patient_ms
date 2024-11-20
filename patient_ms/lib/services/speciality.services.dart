@@ -7,7 +7,7 @@ class SpecialityService {
   static String baseUrl = Config.baseUrl;
 
   static Future<List<SpecialityDt>> getData() async {
-    String apiURL = "$baseUrl/api/speciality/select";
+    String apiURL = "$baseUrl/api/RefererSetup/SpecialitySearch";
 
     try {
       final uri = Uri.parse(apiURL);

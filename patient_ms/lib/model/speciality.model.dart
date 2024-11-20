@@ -2,8 +2,6 @@ class SpecialityDt {
   int? spId;
   String? detail;
 
-  SpecialityDt({this.spId, this.detail});
-
   SpecialityDt.fromJson(Map<String, dynamic> json) {
     spId = json['sp_id'];
     detail = json['detail'];

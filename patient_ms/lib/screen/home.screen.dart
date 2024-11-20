@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:patient_ms/AppointmentNew/screen/appointbooking.dart';
 import 'package:patient_ms/screen/hospital.screen.dart';
 
 class Home extends StatefulWidget {
@@ -199,7 +200,9 @@ class _HomeState extends State<Home> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, '/Appointment');
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    AppointmentBookingPage()));
                           },
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Color.fromARGB(255, 255, 255, 255),

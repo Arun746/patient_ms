@@ -31,9 +31,8 @@ class _SignUpState extends State<SignUp> {
     AuthService.getUserStatus(value).then((bool result) {
       userStatus = result;
       if (mobile.text.length == 10 && userStatus == true) {
-        SnackBar(
-          content: Text("User already exists! Enter another number"),
-        );
+        print("user exists");
+        showErrorSnackBar('User already exists! Enter another number');
       }
     });
   }
@@ -55,25 +54,45 @@ class _SignUpState extends State<SignUp> {
     try {
       int statusCode = await AuthService.signUp(user);
       if (statusCode == 200) {
-        SnackBar(
-          backgroundColor: Colors.green,
-          content: Text('User Registered Successfully'),
-        );
-
+        showSuccessSnackBar('User Created Successfully');
+        print('user created');
         Navigator.pushNamed(context, '/Login');
       } else {
-        SnackBar(
-          backgroundColor: Colors.red,
-          content: Text('Unable to register user : $statusCode'),
-        );
+        print(statusCode);
+        showErrorSnackBar(
+            'Unable to register user : $statusCode ! check mobile number');
       }
     } catch (e) {
-      SnackBar(
-        content: Text("An error occurred: $e"),
-      );
+      showErrorSnackBar('Error Occured ; $e ');
     } finally {
       context.loaderOverlay.hide();
     }
+  }
+
+  void showSuccessSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.green,
+        content: Text(
+          message,
+          textAlign: TextAlign.center,
+        ),
+        duration: Duration(seconds: 1),
+      ),
+    );
+  }
+
+  void showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.red,
+        content: Text(
+          message,
+          textAlign: TextAlign.center,
+        ),
+        duration: Duration(seconds: 1),
+      ),
+    );
   }
 
   @override
@@ -354,5 +373,17 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    firstname.dispose();
+    lastname.dispose();
+    email.dispose();
+    address.dispose();
+    mobile.dispose();
+    password.dispose();
+    confirmpassword.dispose();
+    super.dispose();
   }
 }
