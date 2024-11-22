@@ -27,47 +27,76 @@ class _SignUpState extends State<SignUp> {
 
   bool? userStatus;
 
-  void checkStatus(String value) {
-    AuthService.getUserStatus(value).then((bool result) {
+  void checkStatus() {
+    AuthService.getUserStatus(mobile.text).then((bool result) async {
       userStatus = result;
       if (mobile.text.length == 10 && userStatus == true) {
         print("user exists");
         showErrorSnackBar('User already exists! Enter another number');
+      } else {
+        // postUser();
+        context.loaderOverlay.show();
+        SignUpModel user = SignUpModel(
+          username: mobile.text,
+          password: password.text,
+          confirmPassword: confirmpassword.text,
+          emailAddress: email.text,
+          mobileNumber: mobile.text,
+          address: address.text,
+          firstName: firstname.text,
+          lastName: lastname.text,
+          userRoles: ['user'],
+        );
+
+        try {
+          int statusCode = await AuthService.signUp(user);
+          if (statusCode == 200) {
+            showSuccessSnackBar('User Created Successfully');
+            print('user created');
+            Navigator.pushNamed(context, '/Login');
+          } else {
+            print(statusCode);
+            showErrorSnackBar('Unable to register user : $statusCode ');
+          }
+        } catch (e) {
+          showErrorSnackBar('Error Occured ; $e ');
+        } finally {
+          context.loaderOverlay.hide();
+        }
       }
     });
   }
 
-  Future<void> postUser() async {
-    context.loaderOverlay.show();
-    SignUpModel user = SignUpModel(
-      username: mobile.text,
-      password: password.text,
-      confirmPassword: confirmpassword.text,
-      emailAddress: email.text,
-      mobileNumber: mobile.text,
-      address: address.text,
-      firstName: firstname.text,
-      lastName: lastname.text,
-      userRoles: ['user'],
-    );
+  // Future<void> postUser() async {
+  //   context.loaderOverlay.show();
+  //   SignUpModel user = SignUpModel(
+  //     username: mobile.text,
+  //     password: password.text,
+  //     confirmPassword: confirmpassword.text,
+  //     emailAddress: email.text,
+  //     mobileNumber: mobile.text,
+  //     address: address.text,
+  //     firstName: firstname.text,
+  //     lastName: lastname.text,
+  //     userRoles: ['user'],
+  //   );
 
-    try {
-      int statusCode = await AuthService.signUp(user);
-      if (statusCode == 200) {
-        showSuccessSnackBar('User Created Successfully');
-        print('user created');
-        Navigator.pushNamed(context, '/Login');
-      } else {
-        print(statusCode);
-        showErrorSnackBar(
-            'Unable to register user : $statusCode ! check mobile number');
-      }
-    } catch (e) {
-      showErrorSnackBar('Error Occured ; $e ');
-    } finally {
-      context.loaderOverlay.hide();
-    }
-  }
+  //   try {
+  //     int statusCode = await AuthService.signUp(user);
+  //     if (statusCode == 200) {
+  //       showSuccessSnackBar('User Created Successfully');
+  //       print('user created');
+  //       Navigator.pushNamed(context, '/Login');
+  //     } else {
+  //       print(statusCode);
+  //       showErrorSnackBar('Unable to register user : $statusCode ');
+  //     }
+  //   } catch (e) {
+  //     showErrorSnackBar('Error Occured ; $e ');
+  //   } finally {
+  //     context.loaderOverlay.hide();
+  //   }
+  // }
 
   void showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -226,7 +255,7 @@ class _SignUpState extends State<SignUp> {
                         ),
                         SizedBox(height: 0.01 * screenHeight),
                         TextFormField(
-                          onChanged: (value) => checkStatus(value),
+                          // onChanged: (value) => checkStatus(value),
                           controller: mobile,
                           decoration: InputDecoration(
                             border: UnderlineInputBorder(),
@@ -321,7 +350,8 @@ class _SignUpState extends State<SignUp> {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
-                                    postUser();
+                                    // postUser();
+                                    checkStatus();
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(

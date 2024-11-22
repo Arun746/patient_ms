@@ -2,7 +2,7 @@
 
 import 'package:patient_ms/screen/appointment.screen.dart';
 import 'package:patient_ms/screen/home.screen.dart';
-import 'package:patient_ms/screen/login.screen.dart';
+import 'package:patient_ms/Auth/screen/login.screen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:patient_ms/screen/userselect.screen.dart';

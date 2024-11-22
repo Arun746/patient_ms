@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
         await _storeToken(accessToken);
         print(accessToken);
         context.loaderOverlay.hide();
-        Navigator.pushNamed(context, '/Home');
+        Navigator.pushNamed(context, '/SelectUser');
         showSuccessToast('Logged In Successfully');
       } else {
         context.loaderOverlay.hide();

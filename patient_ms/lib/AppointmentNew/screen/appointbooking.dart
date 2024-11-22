@@ -116,25 +116,28 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      DropdownButtonFormField<String>(
-                        menuMaxHeight: screenHeight * 0.5,
-                        borderRadius: BorderRadius.circular(10),
-                        value: _selectedValue,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _selectedValue = newValue;
-                          });
-                        },
-                        items: departmentMap.entries.map((entry) {
-                          return DropdownMenuItem<String>(
-                            alignment: Alignment.centerLeft,
-                            value: entry.key.toString(),
-                            child: Text(entry.value),
-                          );
-                        }).toList(),
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
+                      SizedBox(
+                        height: screenHeight * 0.06,
+                        child: DropdownButtonFormField<String>(
+                          menuMaxHeight: screenHeight * 0.5,
+                          borderRadius: BorderRadius.circular(10),
+                          value: _selectedValue,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _selectedValue = newValue;
+                            });
+                          },
+                          items: departmentMap.entries.map((entry) {
+                            return DropdownMenuItem<String>(
+                              alignment: Alignment.centerLeft,
+                              value: entry.key.toString(),
+                              child: Text(entry.value),
+                            );
+                          }).toList(),
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
                         ),
                       ),
@@ -243,11 +246,14 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              hintText: 'enter your full name',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                          SizedBox(
+                            height: screenHeight * 0.06,
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'enter your full name',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
                             ),
                           ),
@@ -261,11 +267,14 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              hintText: 'enter your email',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                          SizedBox(
+                            height: screenHeight * 0.06,
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'enter your email',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
                             ),
                           ),
@@ -279,11 +288,14 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              hintText: 'enter your address',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                          SizedBox(
+                            height: screenHeight * 0.06,
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'enter your address',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
                             ),
                           ),
@@ -297,11 +309,14 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              hintText: 'enter your contact number',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                          SizedBox(
+                            height: screenHeight * 0.06,
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'enter your contact number',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
                             ),
                           ),
@@ -315,11 +330,14 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              hintText: 'enter your age',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                          SizedBox(
+                            height: screenHeight * 0.06,
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'enter your age',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
                             ),
                           ),
@@ -397,19 +415,297 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
 
                     // Insurance form fields
                     : Column(
-                        children: [Text("data")],
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Bima No',
+                            style: TextStyle(
+                              fontSize: 14 * (screenWidth / 360),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.06,
+                            child: TextFormField(
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                hintText: 'Bima Number',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.02,
+                          ),
+                          Text(
+                            'Scheme Name',
+                            style: TextStyle(
+                              fontSize: 14 * (screenWidth / 360),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.06,
+                            child: DropdownButtonFormField<String>(
+                              menuMaxHeight: screenHeight * 0.5,
+                              borderRadius: BorderRadius.circular(10),
+                              value: _selectedValue,
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  _selectedValue = newValue;
+                                });
+                              },
+                              items: departmentMap.entries.map((entry) {
+                                return DropdownMenuItem<String>(
+                                  alignment: Alignment.centerLeft,
+                                  value: entry.key.toString(),
+                                  child: Text(entry.value),
+                                );
+                              }).toList(),
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.02,
+                          ),
+                          Text(
+                            'Scheme Prod.',
+                            style: TextStyle(
+                              fontSize: 14 * (screenWidth / 360),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.06,
+                            child: DropdownButtonFormField<String>(
+                              menuMaxHeight: screenHeight * 0.5,
+                              borderRadius: BorderRadius.circular(10),
+                              value: _selectedValue,
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  _selectedValue = newValue;
+                                });
+                              },
+                              items: departmentMap.entries.map((entry) {
+                                return DropdownMenuItem<String>(
+                                  alignment: Alignment.centerLeft,
+                                  value: entry.key.toString(),
+                                  child: Text(entry.value),
+                                );
+                              }).toList(),
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.02,
+                          ),
+                          Text(
+                            'Patient Name',
+                            style: TextStyle(
+                              fontSize: 14 * (screenWidth / 360),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.06,
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'enter your full name',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.02,
+                          ),
+                          Text(
+                            'Email',
+                            style: TextStyle(
+                              fontSize: 14 * (screenWidth / 360),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.06,
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'enter your email',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.02,
+                          ),
+                          Text(
+                            'Address',
+                            style: TextStyle(
+                              fontSize: 14 * (screenWidth / 360),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.06,
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'enter your address',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.02,
+                          ),
+                          Text(
+                            'Contact Number',
+                            style: TextStyle(
+                              fontSize: 14 * (screenWidth / 360),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.06,
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'enter your contact number',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.02,
+                          ),
+                          Text(
+                            'Age',
+                            style: TextStyle(
+                              fontSize: 14 * (screenWidth / 360),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.06,
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'enter your age',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * 0.02,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Select  Gender',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14 * (screenWidth / 360),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Radio<int>(
+                                    value: 1,
+                                    groupValue: _gender,
+                                    onChanged: (int? value) {
+                                      setState(() {
+                                        _gender = value;
+                                      });
+                                    },
+                                  ),
+                                  Text(
+                                    'Male',
+                                    style: TextStyle(
+                                      fontSize: 13 * (screenWidth / 360),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  SizedBox(width: screenWidth * 0.1),
+                                  Radio<int>(
+                                    value: 2,
+                                    groupValue: _gender,
+                                    onChanged: (int? value) {
+                                      setState(() {
+                                        _gender = value;
+                                      });
+                                    },
+                                  ),
+                                  Text(
+                                    'Female',
+                                    style: TextStyle(
+                                      fontSize: 13 * (screenWidth / 360),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  SizedBox(width: screenWidth * 0.1),
+                                  Radio<int>(
+                                    value: 3,
+                                    groupValue: _gender,
+                                    onChanged: (int? value) {
+                                      setState(() {
+                                        _gender = value;
+                                      });
+                                    },
+                                  ),
+                                  Text(
+                                    'Others',
+                                    style: TextStyle(
+                                      fontSize: 13 * (screenWidth / 360),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
 
-                const SizedBox(height: 32),
+                SizedBox(
+                  height: screenHeight * 0.02,
+                ),
 
-                ElevatedButton(
-                  onPressed: () {
-                    if (formKey.currentState!.validate()) {
-                      // Perform action after validation succeeds
-                      print('Form validated successfully');
-                    }
-                  },
-                  child: const Text('Book Appointment'),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Config.primarythemeColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(screenWidth * 0.05),
+                      ),
+                      minimumSize: Size(screenWidth * 0.2, screenHeight * 0.05),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: screenWidth * 0.15),
+                      elevation: 5,
+                    ),
+                    child: const Text('Book Appointment'),
+                  ),
+                ),
+                SizedBox(
+                  height: screenHeight * 0.02,
                 ),
               ],
             ),
