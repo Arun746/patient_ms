@@ -117,6 +117,8 @@ class AuthService {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.remove('token');
       await prefs.remove('userid');
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
   }
 }

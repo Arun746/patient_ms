@@ -5,7 +5,7 @@ import 'package:patient_ms/screen/home.screen.dart';
 import 'package:patient_ms/Auth/screen/login.screen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:patient_ms/screen/userselect.screen.dart';
+import 'package:patient_ms/profile/profileselect.screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
       routes: <String, WidgetBuilder>{
         '/Login': (BuildContext context) => const LoginScreen(),
         '/Home': (BuildContext context) => const Home(),
-        '/SelectUser': (BuildContext context) => const SelectUser(),
+        '/SelectUser': (BuildContext context) => const SelectProfile(),
         '/Appointment': (BuildContext context) => const Appointment(),
       },
       debugShowCheckedModeBanner: false,

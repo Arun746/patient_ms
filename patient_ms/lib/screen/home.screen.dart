@@ -1,9 +1,13 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, deprecated_member_use
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:patient_ms/AppointmentNew/screen/appointbooking.dart';
+import 'package:patient_ms/Auth/screen/login.screen.dart';
+import 'package:patient_ms/Auth/services/authservice.dart';
+import 'package:patient_ms/config/config.dart';
 import 'package:patient_ms/screen/hospital.screen.dart';
 
 class Home extends StatefulWidget {
@@ -153,8 +157,41 @@ class _HomeState extends State<Home> {
                               ),
                               PopupMenuItem<String>(
                                 onTap: () {
-                                  Navigator.pushNamedAndRemoveUntil(
-                                      context, '/Login', (route) => false);
+                                  AwesomeDialog(
+                                    dialogBackgroundColor: Colors.white,
+                                    context: context,
+                                    dialogType: DialogType.warning,
+                                    animType: AnimType.topSlide,
+                                    // showCloseIcon: true,
+                                    title: "Ohh!",
+                                    desc: 'Are you sure you want to logout?',
+                                    descTextStyle: TextStyle(
+                                        fontSize: 16 * (screenWidth / 360),
+                                        color: Config.primarythemeColor),
+                                    btnCancelText: 'No',
+                                    btnCancelOnPress: () {},
+                                    btnOkText: 'Yes',
+                                    btnOkOnPress: () async {
+                                      await AuthService.logout(context);
+                                      Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                LoginScreen()),
+                                        (Route<dynamic> route) => false,
+                                      );
+                                      Fluttertoast.showToast(
+                                          msg: 'Logged Out !!',
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.TOP_LEFT,
+                                          timeInSecForIosWeb: 0.1.round(),
+                                          backgroundColor: Colors.red,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0);
+                                    },
+                                    btnOkColor: Config.primarythemeColor,
+                                    btnCancelColor: Colors.grey.shade700,
+                                  ).show();
                                 },
                                 child: Row(
                                   children: [

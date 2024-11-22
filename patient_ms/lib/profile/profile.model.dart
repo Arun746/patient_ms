@@ -6,21 +6,21 @@ class PatientInfoDt {
   String? ddate;
   String? dob;
   String? email;
-  String? ethinicCode;
+  int? ethinicCode;
   String? gender;
-  String? hospid;
-  String? id;
+  int? hospid;
+  int? id;
   String? martialstatus;
-  String? nagarVdcId;
+  int? nagarVdcId;
   String? nid;
   String? occupation;
   String? pname;
   String? policyid;
   String? regno;
   String? remarks;
-  String? staff;
+  bool? staff;
   String? telephone;
-  String? userid;
+  int? userid;
   String? wardno;
 
   PatientInfoDt(
