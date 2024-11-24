@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:patient_ms/config/config.dart';
+import 'package:patient_ms/profile/profile.model.dart';
 import 'package:patient_ms/services/speciality.services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppointmentBookingPage extends StatefulWidget {
   const AppointmentBookingPage({super.key});
@@ -16,17 +20,40 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
   int? _registrationType;
   int? _gender;
   String? _selectedValue;
-
   List<Object> departments = [];
+  TextEditingController _address = TextEditingController();
   @override
   void initState() {
     _registrationType = 1;
     _fetchSpecialities();
+    getSelectedPatientData().then((data) {
+      setState(() {
+        _address.text = data['address'] ?? '';
+      });
+    });
     super.initState();
   }
 
-  Map<int, String> departmentMap = {};
+  PatientInfoDt deserializePatient(String json) =>
+      PatientInfoDt.fromJson(jsonDecode(json));
 
+  Future<Map<String, dynamic>> getSelectedPatientData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? serializedPatient = prefs.getString('selected_patient_data');
+    if (serializedPatient != null) {
+      PatientInfoDt patient = deserializePatient(serializedPatient);
+      return {
+        'fullName': patient.pname,
+        'email': patient.email,
+        'address': patient.address,
+        'contactNumber': patient.contactPhone,
+        'age': patient.dob,
+      };
+    }
+    return {};
+  }
+
+  Map<int, String> departmentMap = {};
   Future<void> _fetchSpecialities() async {
     try {
       final specialityList = await SpecialityService.getData();
@@ -149,7 +176,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
                   child: Container(
-                    width: screenWidth * 0.95,
+                    width: screenWidth * 0.97,
                     decoration: BoxDecoration(
                       color: Color.fromARGB(255, 240, 247, 247),
                       borderRadius: BorderRadius.circular(10),
@@ -163,7 +190,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                       ],
                     ),
                     child: Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(screenWidth * 0.02),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,6 +203,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                             ),
                           ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Radio<int>(
                                 value: 1,
@@ -193,7 +221,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              SizedBox(width: screenWidth * 0.1),
+                              SizedBox(width: screenWidth * 0.05),
                               Radio<int>(
                                 value: 2,
                                 groupValue: _registrationType,
@@ -210,7 +238,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              SizedBox(width: screenWidth * 0.1),
+                              SizedBox(width: screenWidth * 0.06),
                               Radio<int>(
                                 value: 3,
                                 groupValue: _registrationType,
@@ -291,6 +319,8 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                           SizedBox(
                             height: screenHeight * 0.06,
                             child: TextFormField(
+                              controller: _address,
+                              readOnly: true,
                               decoration: InputDecoration(
                                 hintText: 'enter your address',
                                 border: OutlineInputBorder(

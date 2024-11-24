@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_unnecessary_containers, prefer_const_constructors
 
+import 'dart:convert';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,6 +11,7 @@ import 'package:patient_ms/Auth/screen/login.screen.dart';
 import 'package:patient_ms/Auth/services/authservice.dart';
 import 'package:patient_ms/profile/profile.model.dart';
 import 'package:patient_ms/profile/profile.service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../config/config.dart';
 
 class SelectProfile extends StatefulWidget {
@@ -22,6 +25,30 @@ class _SelectProfileState extends State<SelectProfile> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
   int? _selectedIndex;
+  String? _userId;
+
+  String serializePatient(PatientInfoDt patient) =>
+      json.encode(patient.toJson());
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserId();
+  }
+
+  Future<void> _loadUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userId = prefs.getString('userid') ?? '';
+      // print(_userId);
+    });
+  }
+
+  Future<void> saveSelectedPatient(PatientInfoDt filteredData) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String serializedPatient = serializePatient(filteredData);
+    await prefs.setString('selected_patient_data', serializedPatient);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +120,7 @@ class _SelectProfileState extends State<SelectProfile> {
         body: Column(
           children: [
             FutureBuilder<List<PatientInfoDt>>(
-                future: ProfileService.getData(350),
+                future: ProfileService.getData(_userId),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<PatientInfoDt>> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -178,7 +205,7 @@ class _SelectProfileState extends State<SelectProfile> {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               if (_selectedIndex == null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -192,7 +219,11 @@ class _SelectProfileState extends State<SelectProfile> {
                                   ),
                                 );
                               } else {
-                                Navigator.pushNamed(context, '/Home');
+                                if (_selectedIndex != null) {
+                                  await saveSelectedPatient(
+                                      filteredData[_selectedIndex!]);
+                                  Navigator.pushNamed(context, '/Home');
+                                }
                               }
                             },
                             child: const Text('Continue as Selected Profile'),
@@ -213,6 +244,7 @@ class _SelectProfileState extends State<SelectProfile> {
       onTap: () {
         setState(() {
           _selectedIndex = _selectedIndex == index ? null : index;
+          print(_selectedIndex);
         });
       },
       child: ListTile(

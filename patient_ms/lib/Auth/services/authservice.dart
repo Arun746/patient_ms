@@ -67,7 +67,18 @@ class AuthService {
       );
 
       if (response.statusCode == 200) {
-        // Decode the JSON response body
+        Map<String, dynamic> responseBody = json.decode(response.body);
+
+        // Extract the token from the response
+        String token = responseBody['access_token'] ?? '';
+
+        // Parse the JWT token
+        Map<String, dynamic> payload = Jwt.parseJwt(token);
+        String userId = payload['sub'];
+
+        // Store the user ID in shared preferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('userid', userId.toString());
         return json.decode(response.body);
       } else {
         throw response.statusCode == 400
@@ -81,20 +92,17 @@ class AuthService {
     }
   }
 
-  static Future<String?> parseToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    String? token = prefs.getString('token');
-    if (token != null) {
-      Map<String, dynamic> payload = Jwt.parseJwt(token);
-
-      String userId = payload['sub'];
-      await prefs.setString('userid', userId.toString());
-
-      return userId;
-    }
-    return null;
-  }
+  // static Future<String?> parseToken() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? token = prefs.getString('token');
+  //   if (token != null) {
+  //     Map<String, dynamic> payload = Jwt.parseJwt(token);
+  //     String userId = payload['sub'];
+  //     await prefs.setString('userid', userId.toString());
+  //     return userId;
+  //   }
+  //   return null;
+  // }
 
   static Future<bool> isLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -106,10 +114,6 @@ class AuthService {
 
     bool isExpired = Jwt.isExpired(token);
     return !isExpired;
-  }
-
-  static Future<String?> getUserId() async {
-    return await parseToken();
   }
 
   static Future<void> logout(BuildContext context) async {
