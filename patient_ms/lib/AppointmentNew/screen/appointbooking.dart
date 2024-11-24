@@ -1,6 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:patient_ms/AppointmentNew/model/datemodel.dart';
+import 'package:patient_ms/AppointmentNew/model/department.model.dart';
+import 'package:patient_ms/AppointmentNew/services/dateservice.dart';
+import 'package:patient_ms/AppointmentNew/services/department.service.dart';
 import 'package:patient_ms/config/config.dart';
 import 'package:patient_ms/profile/profile.model.dart';
 import 'package:patient_ms/services/speciality.services.dart';
@@ -19,16 +24,51 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
   late double screenHeight = MediaQuery.of(context).size.height;
   int? _registrationType;
   int? _gender;
-  String? _selectedValue;
-  List<Object> departments = [];
-  TextEditingController _address = TextEditingController();
+
+  final TextEditingController _address = TextEditingController();
+  final TextEditingController _name = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _number = TextEditingController();
+  final TextEditingController _dob = TextEditingController();
+  final TextEditingController _bima = TextEditingController();
+
+  List<DateDt> _dateList = [];
+  String? _selectedDate;
+  Future<void> _fetchAndStoreData() async {
+    final data = await DateService.getData();
+    setState(() {
+      _dateList = data;
+    });
+  }
+
+  List<DepartmentDt> _departList = [];
+  String? _selectedDepart;
+  Future<void> _fetchdepart() async {
+    final data = await DepartmentService.getData();
+    setState(() {
+      _departList = data;
+    });
+  }
+
   @override
   void initState() {
     _registrationType = 1;
-    _fetchSpecialities();
+    _fetchdepart();
+    _fetchAndStoreData();
     getSelectedPatientData().then((data) {
       setState(() {
+        _bima.text = data['bimano'] ?? '';
         _address.text = data['address'] ?? '';
+        _name.text = data['fullName'] ?? '';
+        _email.text = data['email'] ?? '';
+        _number.text = data['contactNumber'] ?? '';
+        _dob.text =
+            DateFormat('yyyy-MM-dd').format(DateTime.parse(data['dob'] ?? ''));
+        data['pgender'] == 'male'
+            ? _gender = 1
+            : data['pgender'] == 'male'
+                ? _gender = 2
+                : _gender = 3;
       });
     });
     super.initState();
@@ -46,29 +86,13 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
         'fullName': patient.pname,
         'email': patient.email,
         'address': patient.address,
-        'contactNumber': patient.contactPhone,
-        'age': patient.dob,
+        'contactNumber': patient.telephone,
+        'dob': patient.dob,
+        'pgender': patient.gender,
+        'bimano': patient.policyid,
       };
     }
     return {};
-  }
-
-  Map<int, String> departmentMap = {};
-  Future<void> _fetchSpecialities() async {
-    try {
-      final specialityList = await SpecialityService.getData();
-      setState(() {
-        departments = specialityList;
-
-        // Create a map of department IDs to names
-        departmentMap = specialityList.asMap().entries.fold(
-            {},
-            (acc, entry) =>
-                {...acc, entry.key + 1: entry.value.detail.toString()});
-      });
-    } catch (e) {
-      print('Error fetching specialities: $e');
-    }
   }
 
   @override
@@ -144,21 +168,16 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                         ),
                       ),
                       SizedBox(
-                        height: screenHeight * 0.06,
+                        height: screenHeight * 0.07,
                         child: DropdownButtonFormField<String>(
-                          menuMaxHeight: screenHeight * 0.5,
-                          borderRadius: BorderRadius.circular(10),
-                          value: _selectedValue,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _selectedValue = newValue;
-                            });
-                          },
-                          items: departmentMap.entries.map((entry) {
-                            return DropdownMenuItem<String>(
-                              alignment: Alignment.centerLeft,
-                              value: entry.key.toString(),
-                              child: Text(entry.value),
+                          value: _selectedDepart,
+                          hint: Text('Select department'),
+                          isExpanded: true,
+                          icon: const Icon(Icons.keyboard_arrow_down),
+                          items: _departList.map((item) {
+                            return DropdownMenuItem(
+                              value: item.grpid.toString(),
+                              child: Text(item.groupname.toString()),
                             );
                           }).toList(),
                           decoration: InputDecoration(
@@ -166,6 +185,56 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedDepart = value;
+                              print(_selectedDepart);
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                //appdate
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: screenHeight * 0.03, bottom: screenHeight * 0.01),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Select Appointment Date',
+                        style: TextStyle(
+                          fontSize: 14 * (screenWidth / 360),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(
+                        height: screenHeight * 0.07,
+                        child: DropdownButtonFormField<String>(
+                          value: _selectedDate,
+                          hint: Text('Select date'),
+                          isExpanded: true,
+                          icon: const Icon(Icons.keyboard_arrow_down),
+                          items: _dateList.map((item) {
+                            return DropdownMenuItem(
+                              value: item.adDate.toString(),
+                              child:
+                                  Text(item.adDate.toString().substring(0, 10)),
+                            );
+                          }).toList(),
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedDate = value;
+                              print(_selectedDate);
+                            });
+                          },
                         ),
                       ),
                     ],
@@ -227,7 +296,21 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                                 groupValue: _registrationType,
                                 onChanged: (int? value) {
                                   setState(() {
-                                    _registrationType = value;
+                                    _bima.text.isEmpty
+                                        ? ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                            const SnackBar(
+                                              backgroundColor: Colors.red,
+                                              duration: Duration(seconds: 1),
+                                              content: Text(
+                                                'You are not eligible as your profile do not have Bima ID !',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          )
+                                        : _registrationType = value;
                                   });
                                 },
                               ),
@@ -243,9 +326,17 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                                 value: 3,
                                 groupValue: _registrationType,
                                 onChanged: (int? value) {
-                                  setState(() {
-                                    _registrationType = value;
-                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      backgroundColor: Colors.red,
+                                      duration: Duration(seconds: 1),
+                                      content: Text(
+                                        'This feature will be available soon !',
+                                        style: TextStyle(color: Colors.white),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  );
                                 },
                               ),
                               Text(
@@ -277,8 +368,12 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                           SizedBox(
                             height: screenHeight * 0.06,
                             child: TextFormField(
+                              readOnly: true,
+                              controller: _name,
                               decoration: InputDecoration(
-                                hintText: 'enter your full name',
+                                filled: true,
+                                // fillColor: Colors.grey,
+                                // hintText: 'enter your full name',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -298,8 +393,9 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                           SizedBox(
                             height: screenHeight * 0.06,
                             child: TextFormField(
+                              controller: _email,
                               decoration: InputDecoration(
-                                hintText: 'enter your email',
+                                // hintText: 'enter your email',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -322,6 +418,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                               controller: _address,
                               readOnly: true,
                               decoration: InputDecoration(
+                                filled: true,
                                 hintText: 'enter your address',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -342,6 +439,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                           SizedBox(
                             height: screenHeight * 0.06,
                             child: TextFormField(
+                              controller: _number,
                               decoration: InputDecoration(
                                 hintText: 'enter your contact number',
                                 border: OutlineInputBorder(
@@ -354,7 +452,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                             height: screenHeight * 0.02,
                           ),
                           Text(
-                            'Age',
+                            'Date of Birth',
                             style: TextStyle(
                               fontSize: 14 * (screenWidth / 360),
                               fontWeight: FontWeight.w500,
@@ -363,8 +461,11 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                           SizedBox(
                             height: screenHeight * 0.06,
                             child: TextFormField(
+                              readOnly: true,
+                              controller: _dob,
                               decoration: InputDecoration(
-                                hintText: 'enter your age',
+                                filled: true,
+                                hintText: 'enter your dob',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -389,11 +490,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                                   Radio<int>(
                                     value: 1,
                                     groupValue: _gender,
-                                    onChanged: (int? value) {
-                                      setState(() {
-                                        _gender = value;
-                                      });
-                                    },
+                                    onChanged: (value) {},
                                   ),
                                   Text(
                                     'Male',
@@ -407,9 +504,9 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                                     value: 2,
                                     groupValue: _gender,
                                     onChanged: (int? value) {
-                                      setState(() {
-                                        _gender = value;
-                                      });
+                                      // setState(() {
+                                      //   _gender = value;
+                                      // });
                                     },
                                   ),
                                   Text(
@@ -424,9 +521,9 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                                     value: 3,
                                     groupValue: _gender,
                                     onChanged: (int? value) {
-                                      setState(() {
-                                        _gender = value;
-                                      });
+                                      // setState(() {
+                                      //   _gender = value;
+                                      // });
                                     },
                                   ),
                                   Text(
@@ -457,9 +554,10 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                           SizedBox(
                             height: screenHeight * 0.06,
                             child: TextFormField(
+                              controller: _bima,
                               readOnly: true,
                               decoration: InputDecoration(
-                                hintText: 'Bima Number',
+                                // hintText: 'Add bima no from profile',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -469,78 +567,78 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                           SizedBox(
                             height: screenHeight * 0.02,
                           ),
+                          // Text(
+                          //   'Scheme Name',
+                          //   style: TextStyle(
+                          //     fontSize: 14 * (screenWidth / 360),
+                          //     fontWeight: FontWeight.w500,
+                          //   ),
+                          // ),
+                          // SizedBox(
+                          //   height: screenHeight * 0.06,
+                          //   child: DropdownButtonFormField<String>(
+                          //     menuMaxHeight: screenHeight * 0.5,
+                          //     borderRadius: BorderRadius.circular(10),
+                          //     value: _selectedValue,
+                          //     onChanged: (String? newValue) {
+                          //       setState(() {
+                          //         _selectedValue = newValue;
+                          //       });
+                          //     },
+                          //     items: departmentMap.entries.map((entry) {
+                          //       return DropdownMenuItem<String>(
+                          //         alignment: Alignment.centerLeft,
+                          //         value: entry.key.toString(),
+                          //         child: Text(entry.value),
+                          //       );
+                          //     }).toList(),
+                          //     decoration: InputDecoration(
+                          //       border: OutlineInputBorder(
+                          //         borderRadius: BorderRadius.circular(10),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                          // // SizedBox(
+                          //   //   height: screenHeight * 0.02,
+                          //   // ),
+                          //   // Text(
+                          //   //   'Scheme Prod.',
+                          //   //   style: TextStyle(
+                          //   //     fontSize: 14 * (screenWidth / 360),
+                          //   //     fontWeight: FontWeight.w500,
+                          //   //   ),
+                          //   // ),
+                          //   // SizedBox(
+                          //   //   height: screenHeight * 0.06,
+                          //   //   child: DropdownButtonFormField<String>(
+                          //   //     menuMaxHeight: screenHeight * 0.5,
+                          //   //     borderRadius: BorderRadius.circular(10),
+                          //   //     value: _selectedValue,
+                          //   //     onChanged: (String? newValue) {
+                          //   //       setState(() {
+                          //   //         _selectedValue = newValue;
+                          //   //       });
+                          //   //     },
+                          //   //     items: departmentMap.entries.map((entry) {
+                          //   //       return DropdownMenuItem<String>(
+                          //   //         alignment: Alignment.centerLeft,
+                          //   //         value: entry.key.toString(),
+                          //   //         child: Text(entry.value),
+                          //   //       );
+                          //   //     }).toList(),
+                          //   //     decoration: InputDecoration(
+                          //   //       border: OutlineInputBorder(
+                          //   //         borderRadius: BorderRadius.circular(10),
+                          //   //       ),
+                          //   //     ),
+                          //   //   ),
+                          //   // ),
+                          //   // SizedBox(
+                          //   height: screenHeight * 0.02,
+                          // ),
                           Text(
-                            'Scheme Name',
-                            style: TextStyle(
-                              fontSize: 14 * (screenWidth / 360),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          SizedBox(
-                            height: screenHeight * 0.06,
-                            child: DropdownButtonFormField<String>(
-                              menuMaxHeight: screenHeight * 0.5,
-                              borderRadius: BorderRadius.circular(10),
-                              value: _selectedValue,
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  _selectedValue = newValue;
-                                });
-                              },
-                              items: departmentMap.entries.map((entry) {
-                                return DropdownMenuItem<String>(
-                                  alignment: Alignment.centerLeft,
-                                  value: entry.key.toString(),
-                                  child: Text(entry.value),
-                                );
-                              }).toList(),
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: screenHeight * 0.02,
-                          ),
-                          Text(
-                            'Scheme Prod.',
-                            style: TextStyle(
-                              fontSize: 14 * (screenWidth / 360),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          SizedBox(
-                            height: screenHeight * 0.06,
-                            child: DropdownButtonFormField<String>(
-                              menuMaxHeight: screenHeight * 0.5,
-                              borderRadius: BorderRadius.circular(10),
-                              value: _selectedValue,
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  _selectedValue = newValue;
-                                });
-                              },
-                              items: departmentMap.entries.map((entry) {
-                                return DropdownMenuItem<String>(
-                                  alignment: Alignment.centerLeft,
-                                  value: entry.key.toString(),
-                                  child: Text(entry.value),
-                                );
-                              }).toList(),
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: screenHeight * 0.02,
-                          ),
-                          Text(
-                            'Patient Name',
+                            'Full Name',
                             style: TextStyle(
                               fontSize: 14 * (screenWidth / 360),
                               fontWeight: FontWeight.w500,
@@ -549,8 +647,11 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                           SizedBox(
                             height: screenHeight * 0.06,
                             child: TextFormField(
+                              readOnly: true,
+                              controller: _name,
                               decoration: InputDecoration(
-                                hintText: 'enter your full name',
+                                filled: true,
+                                // hintText: 'enter your full name',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -570,8 +671,9 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                           SizedBox(
                             height: screenHeight * 0.06,
                             child: TextFormField(
+                              controller: _email,
                               decoration: InputDecoration(
-                                hintText: 'enter your email',
+                                // hintText: 'enter your email',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -591,7 +693,10 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                           SizedBox(
                             height: screenHeight * 0.06,
                             child: TextFormField(
+                              controller: _address,
+                              readOnly: true,
                               decoration: InputDecoration(
+                                filled: true,
                                 hintText: 'enter your address',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -612,6 +717,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                           SizedBox(
                             height: screenHeight * 0.06,
                             child: TextFormField(
+                              controller: _number,
                               decoration: InputDecoration(
                                 hintText: 'enter your contact number',
                                 border: OutlineInputBorder(
@@ -624,7 +730,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                             height: screenHeight * 0.02,
                           ),
                           Text(
-                            'Age',
+                            'Date of Birth',
                             style: TextStyle(
                               fontSize: 14 * (screenWidth / 360),
                               fontWeight: FontWeight.w500,
@@ -633,8 +739,11 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                           SizedBox(
                             height: screenHeight * 0.06,
                             child: TextFormField(
+                              readOnly: true,
+                              controller: _dob,
                               decoration: InputDecoration(
-                                hintText: 'enter your age',
+                                filled: true,
+                                hintText: 'enter your dob',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -659,11 +768,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                                   Radio<int>(
                                     value: 1,
                                     groupValue: _gender,
-                                    onChanged: (int? value) {
-                                      setState(() {
-                                        _gender = value;
-                                      });
-                                    },
+                                    onChanged: (value) {},
                                   ),
                                   Text(
                                     'Male',
@@ -677,9 +782,9 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                                     value: 2,
                                     groupValue: _gender,
                                     onChanged: (int? value) {
-                                      setState(() {
-                                        _gender = value;
-                                      });
+                                      // setState(() {
+                                      //   _gender = value;
+                                      // });
                                     },
                                   ),
                                   Text(
@@ -694,9 +799,9 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                                     value: 3,
                                     groupValue: _gender,
                                     onChanged: (int? value) {
-                                      setState(() {
-                                        _gender = value;
-                                      });
+                                      // setState(() {
+                                      //   _gender = value;
+                                      // });
                                     },
                                   ),
                                   Text(
