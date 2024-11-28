@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:patient_ms/AppointmentNew/model/datemodel.dart';
 import 'package:patient_ms/AppointmentNew/model/department.model.dart';
+import 'package:patient_ms/AppointmentNew/model/scheme.model.dart';
 import 'package:patient_ms/AppointmentNew/services/appointment.service.dart';
 import 'package:patient_ms/AppointmentNew/services/dateservice.dart';
 import 'package:patient_ms/AppointmentNew/services/department.service.dart';
@@ -29,12 +30,16 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
   int? patientid;
   String _userId = '';
   bool? eligible;
+  String? schemeNameUrl;
+
   final TextEditingController _address = TextEditingController();
   final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _number = TextEditingController();
   final TextEditingController _dob = TextEditingController();
   final TextEditingController _bima = TextEditingController();
+  final TextEditingController _schname = TextEditingController();
+  final TextEditingController _schproduct = TextEditingController();
   final TextEditingController _remarks = TextEditingController();
 
   List<DateDt> _dateList = [];
@@ -57,24 +62,94 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
     });
   }
 
-  void _checkeligiblity() async {
-    String bimano = _bima.text;
+  Future<void> _checkeligiblity() async {
+    try {
+      context.loaderOverlay.show();
 
-    final eligibilityData =
-        await InsuranceService.getEligibility(bimano, _userId);
-    if (eligibilityData.statusCode == 200) {
+      final responseData =
+          await InsuranceService.getEligibility(_bima.text, _userId);
+
+      if (!mounted) return;
+
+      print('Response Data: $responseData');
+
       setState(() {
-        eligible == true;
-        print("user is eligible");
+        eligible = true;
+        schemeNameUrl = responseData['schemeNameUrl'];
+        _fetchScheme();
+        print(schemeNameUrl);
       });
+
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(
+      //     content: Text(
+      //       'Insurance eligibility confirmed',
+      //       textAlign: TextAlign.center,
+      //     ),
+      //     backgroundColor: Colors.green,
+      //   ),
+      // );
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        eligible = false;
+      });
+
+      print('Error checking eligibility: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          duration: Duration(seconds: 2),
+          content: Text(
+            'Insurance not eligible',
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        context.loaderOverlay.hide();
+      }
     }
+  }
+
+  int? schemeid;
+  List<SchemeDt> _schemeList = [];
+  Future<void> _fetchScheme() async {
+    final data = await InsuranceService().fetchInsuranceSchemes(eligible!);
+    setState(() {
+      _schemeList = data.where((scheme) {
+        if (schemeNameUrl == "0.1") {
+          return scheme.schemeName == "HIB-Pay";
+        } else {
+          return scheme.schemeName == "HIB-free";
+        }
+      }).toList();
+      if (_schemeList.isNotEmpty) {
+        schemeid = _schemeList[0].schemeId;
+        _schname.text = _schemeList[0].schemeName.toString();
+        if (schemeid != null) {
+          _fetchSchemeProduct(schemeid);
+        }
+      }
+    });
+  }
+
+  int? schemeproductId;
+  Future<void> _fetchSchemeProduct(int? schemeid) async {
+    final data =
+        await InsuranceService().fetchInsuranceSchemeProduct(schemeid!);
+    setState(() {
+      schemeproductId = data[0].productId;
+      _schproduct.text = data[0].schemeProductName.toString();
+    });
   }
 
   Future<void> _loadUserId() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _userId = prefs.getString('userid') ?? '';
-      // print(_userId);
     });
   }
 
@@ -92,6 +167,8 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
         _registrationType == 2 ? true : false,
         _registrationType == 3 ? true : false,
         patientid!,
+        schemeid!,
+        schemeproductId!,
       );
 
       if (appointmentsuccess) {
@@ -141,13 +218,14 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
   @override
   void initState() {
     _registrationType = 1;
+    schemeid = 0;
+    schemeproductId = 0;
     _fetchdepart();
     _fetchAndStoreData();
     _loadUserId();
-    // _checkeligiblity();
     getSelectedPatientData().then((data) {
       setState(() {
-        _bima.text = data['bimano'] ?? '';
+        _bima.text = data['policyid'] ?? '';
         _address.text = data['address'] ?? '';
         _name.text = data['fullName'] ?? '';
         _email.text = data['email'] ?? '';
@@ -160,8 +238,12 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                 ? _gender = 2
                 : _gender = 3;
         patientid = data["patientid"];
+        // if (_bima.text.isNotEmpty) {
+        //   _checkeligiblity();
+        // }
       });
     });
+
     super.initState();
   }
 
@@ -180,7 +262,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
         'contactNumber': patient.telephone,
         'dob': patient.dob,
         'pgender': patient.gender,
-        'bimano': patient.policyid,
+        'policyid': patient.policyid,
         'patientid': patient.id,
       };
     }
@@ -215,7 +297,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
           foregroundColor: Colors.white,
           title: const Center(
               child: Text(
-            'Appointment Booking',
+            'Appointment Booking ',
             style: TextStyle(color: Colors.white),
           )),
         ),
@@ -224,43 +306,55 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                //img
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: screenHeight * 0.01,
-                    bottom: screenHeight * 0.01,
-                  ),
-                  child: Stack(
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.25,
-                        child: Image.asset(
-                          'images/full_team.jpg',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      Positioned(
-                        top: screenHeight * 0.003,
-                        left: screenWidth * 0.13,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          height: MediaQuery.of(context).size.height * 0.09,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(5),
-                            ),
-                            color: Color.fromARGB(255, 202, 218, 252),
-                          ),
-                          child: Image.asset(
-                            'images/hosp_name.png',
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                //image
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: screenHeight * 0.015),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 3),
                       ),
                     ],
                   ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Stack(
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.25,
+                          child: Image.asset(
+                            'images/full_team.jpg',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Positioned(
+                          top: screenHeight * 0.003,
+                          left: screenWidth * 0.13,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.7,
+                            height: MediaQuery.of(context).size.height * 0.09,
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(5),
+                              ),
+                              color: Color.fromARGB(255, 202, 218, 252),
+                            ),
+                            child: Image.asset(
+                              'images/hosp_name.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
+
                 //form
                 Form(
                   key: _formKey,
@@ -276,7 +370,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Select Department',
+                              'Select Department *',
                               style: TextStyle(
                                 fontSize: 14 * (screenWidth / 360),
                                 fontWeight: FontWeight.w500,
@@ -295,11 +389,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                                     child: Text(item.groupname.toString()),
                                   );
                                 }).toList(),
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
+                                decoration: _getInputDecoration(),
                                 onChanged: (String? newValue) {
                                   setState(() {
                                     _selectedDepart = newValue;
@@ -313,13 +403,13 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                       //appdate
                       Padding(
                         padding: EdgeInsets.only(
-                            top: screenHeight * 0.03,
+                            top: screenHeight * 0.01,
                             bottom: screenHeight * 0.01),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Select Appointment Date',
+                              'Select Appointment Date *',
                               style: TextStyle(
                                 fontSize: 14 * (screenWidth / 360),
                                 fontWeight: FontWeight.w500,
@@ -340,11 +430,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                                         .substring(0, 10)),
                                   );
                                 }).toList(),
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
+                                decoration: _getInputDecoration(),
                                 onChanged: (value) {
                                   setState(() {
                                     _selectedDate = value;
@@ -358,63 +444,37 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                       ),
                       //time
                       Padding(
-                        padding: EdgeInsets.only(top: screenHeight * 0.03),
+                        padding: EdgeInsets.only(top: screenHeight * 0.01),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Select Time',
+                              'Select Time *',
                               style: TextStyle(
                                 fontSize: 14 * (screenWidth / 360),
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            // SizedBox(
-                            //   width: screenWidth * 0.02,
-                            // ),
-                            GestureDetector(
-                              onTap: () => _selectTime(context),
-                              child: Container(
-                                // width: screenWidth * 0.71,
-                                height: screenHeight * 0.07,
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
-                                  borderRadius: BorderRadius.circular(8),
+                            SizedBox(
+                              child: TextFormField(
+                                readOnly: true,
+                                decoration: _getInputDecoration().copyWith(
+                                  hintText: 'Select time',
+                                  suffixIcon: Icon(
+                                    Icons.access_time_rounded,
+                                    color: Config.primarythemeColor,
+                                  ),
                                 ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          left: screenWidth * 0.037),
-                                      child: Text(
-                                        _selectedTime ?? "Select time",
-                                        style: TextStyle(
-                                            fontSize: (screenWidth * 13 / 360),
-                                            fontWeight: FontWeight.w400),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          right: screenWidth * 0.04),
-                                      child: const Icon(Icons.timer_outlined),
-                                    ),
-                                  ],
-                                ),
+                                onTap: () => _selectTime(context),
+                                validator: (value) {
+                                  if (_selectedTime == null ||
+                                      _selectedTime!.isEmpty) {
+                                    return 'Please select a time';
+                                  }
+                                  return null;
+                                },
                               ),
                             ),
-                            // TimePickerFormField(
-                            //   width: MediaQuery.of(context).size.width * 0.35,
-                            //   height: 200,
-                            //   oldValue: _selectedTime ?? '',
-                            //   onChanged: (String newValue) {
-                            //     setState(() {
-                            //       _selectedTime = newValue;
-                            //     });
-                            //   },
-                            // ),
                           ],
                         ),
                       ),
@@ -473,25 +533,26 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                                       value: 2,
                                       groupValue: _registrationType,
                                       onChanged: (int? value) {
-                                        setState(() {
-                                          _bima.text.isEmpty
-                                              ? ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                  const SnackBar(
-                                                    backgroundColor: Colors.red,
-                                                    duration:
-                                                        Duration(seconds: 1),
-                                                    content: Text(
-                                                      'You are not eligible as your profile do not have Bima ID !',
-                                                      style: TextStyle(
-                                                          color: Colors.white),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                    ),
-                                                  ),
-                                                )
-                                              : _registrationType = value;
-                                        });
+                                        if (_bima.text.isEmpty) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              backgroundColor: Colors.red,
+                                              duration: Duration(seconds: 1),
+                                              content: Text(
+                                                'You are not eligible as your profile does not have Bima ID!',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          );
+                                        } else {
+                                          _checkeligiblity();
+                                          setState(() {
+                                            _registrationType = value;
+                                          });
+                                        }
                                       },
                                     ),
                                     Text(
@@ -551,91 +612,63 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: screenHeight * 0.075,
                                   child: TextFormField(
                                     controller: _bima,
                                     readOnly: true,
-                                    decoration: InputDecoration(
-                                      // hintText: 'Add bima no from profile',
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
+                                    decoration: _getInputDecoration().copyWith(
+                                      filled: true,
+                                      fillColor:
+                                          Color.fromARGB(255, 231, 240, 242),
                                     ),
                                   ),
                                 ),
                                 SizedBox(
-                                  height: screenHeight * 0.02,
+                                  height: screenHeight * 0.01,
                                 ),
-                                // Text(
-                                //   'Scheme Name',
-                                //   style: TextStyle(
-                                //     fontSize: 14 * (screenWidth / 360),
-                                //     fontWeight: FontWeight.w500,
-                                //   ),
-                                // ),
-                                // SizedBox(
-                                //   height: screenHeight * 0.075,
-                                //   child: DropdownButtonFormField<String>(
-                                //     menuMaxHeight: screenHeight * 0.5,
-                                //     borderRadius: BorderRadius.circular(10),
-                                //     value: _selectedValue,
-                                //     onChanged: (String? newValue) {
-                                //       setState(() {
-                                //         _selectedValue = newValue;
-                                //       });
-                                //     },
-                                //     items: departmentMap.entries.map((entry) {
-                                //       return DropdownMenuItem<String>(
-                                //         alignment: Alignment.centerLeft,
-                                //         value: entry.key.toString(),
-                                //         child: Text(entry.value),
-                                //       );
-                                //     }).toList(),
-                                //     decoration: InputDecoration(
-                                //       border: OutlineInputBorder(
-                                //         borderRadius: BorderRadius.circular(10),
-                                //       ),
-                                //     ),
-                                //   ),
-                                // ),
-                                // // SizedBox(
-                                //   //   height: screenHeight * 0.02,
-                                //   // ),
-                                //   // Text(
-                                //   //   'Scheme Prod.',
-                                //   //   style: TextStyle(
-                                //   //     fontSize: 14 * (screenWidth / 360),
-                                //   //     fontWeight: FontWeight.w500,
-                                //   //   ),
-                                //   // ),
-                                //   // SizedBox(
-                                //   //   height: screenHeight * 0.075,
-                                //   //   child: DropdownButtonFormField<String>(
-                                //   //     menuMaxHeight: screenHeight * 0.5,
-                                //   //     borderRadius: BorderRadius.circular(10),
-                                //   //     value: _selectedValue,
-                                //   //     onChanged: (String? newValue) {
-                                //   //       setState(() {
-                                //   //         _selectedValue = newValue;
-                                //   //       });
-                                //   //     },
-                                //   //     items: departmentMap.entries.map((entry) {
-                                //   //       return DropdownMenuItem<String>(
-                                //   //         alignment: Alignment.centerLeft,
-                                //   //         value: entry.key.toString(),
-                                //   //         child: Text(entry.value),
-                                //   //       );
-                                //   //     }).toList(),
-                                //   //     decoration: InputDecoration(
-                                //   //       border: OutlineInputBorder(
-                                //   //         borderRadius: BorderRadius.circular(10),
-                                //   //       ),
-                                //   //     ),
-                                //   //   ),
-                                //   // ),
-                                //   // SizedBox(
-                                //   height: screenHeight * 0.02,
-                                // ),
+                                Text(
+                                  'Scheme Name',
+                                  style: TextStyle(
+                                    fontSize: 14 * (screenWidth / 360),
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: screenHeight * 0.075,
+                                  child: TextFormField(
+                                    controller: _schname,
+                                    readOnly: true,
+                                    decoration: _getInputDecoration().copyWith(
+                                      filled: true,
+                                      fillColor:
+                                          Color.fromARGB(255, 231, 240, 242),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: screenHeight * 0.01,
+                                ),
+                                Text(
+                                  'Scheme Product',
+                                  style: TextStyle(
+                                    fontSize: 14 * (screenWidth / 360),
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: screenHeight * 0.075,
+                                  child: TextFormField(
+                                    controller: _schproduct,
+                                    readOnly: true,
+                                    decoration: _getInputDecoration().copyWith(
+                                      filled: true,
+                                      fillColor:
+                                          Color.fromARGB(255, 231, 240, 242),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: screenHeight * 0.01,
+                                ),
                                 _formdetails(),
                               ],
                             ),
@@ -647,8 +680,27 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              postAppointment();
+                            if (_registrationType == 1) {
+                              if (_formKey.currentState!.validate()) {
+                                postAppointment();
+                              }
+                            } else {
+                              if (eligible == true) {
+                                if (_formKey.currentState!.validate()) {
+                                  postAppointment();
+                                }
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    duration: Duration(seconds: 2),
+                                    content: Text(
+                                      'Insurance not eligible',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -697,13 +749,9 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
           child: TextFormField(
             readOnly: true,
             controller: _name,
-            decoration: InputDecoration(
+            decoration: _getInputDecoration().copyWith(
               filled: true,
-              // fillColor: Colors.grey,
-              // hintText: 'enter your full name',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
+              fillColor: Color.fromARGB(255, 231, 240, 242),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -714,7 +762,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
           ),
         ),
         SizedBox(
-          height: screenHeight * 0.02,
+          height: screenHeight * 0.01,
         ),
         Text(
           'Email',
@@ -727,12 +775,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
           height: screenHeight * 0.075,
           child: TextFormField(
             controller: _email,
-            decoration: InputDecoration(
-              // hintText: 'enter your email',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
+            decoration: _getInputDecoration(),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter email';
@@ -742,7 +785,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
           ),
         ),
         SizedBox(
-          height: screenHeight * 0.02,
+          height: screenHeight * 0.01,
         ),
         Text(
           'Address',
@@ -756,12 +799,9 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
           child: TextFormField(
             controller: _address,
             readOnly: true,
-            decoration: InputDecoration(
+            decoration: _getInputDecoration().copyWith(
               filled: true,
-              hintText: 'enter your address',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
+              fillColor: Color.fromARGB(255, 231, 240, 242),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -772,7 +812,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
           ),
         ),
         SizedBox(
-          height: screenHeight * 0.02,
+          height: screenHeight * 0.01,
         ),
         Text(
           'Contact Number',
@@ -785,12 +825,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
           height: screenHeight * 0.075,
           child: TextFormField(
             controller: _number,
-            decoration: InputDecoration(
-              hintText: 'enter your contact number',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
+            decoration: _getInputDecoration(),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter your number';
@@ -800,7 +835,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
           ),
         ),
         SizedBox(
-          height: screenHeight * 0.02,
+          height: screenHeight * 0.01,
         ),
         Text(
           'Date of Birth',
@@ -814,12 +849,9 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
           child: TextFormField(
             readOnly: true,
             controller: _dob,
-            decoration: InputDecoration(
+            decoration: _getInputDecoration().copyWith(
               filled: true,
-              hintText: 'enter your dob',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
+              fillColor: Color.fromARGB(255, 231, 240, 242),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -830,7 +862,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
           ),
         ),
         SizedBox(
-          height: screenHeight * 0.02,
+          height: screenHeight * 0.01,
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -907,14 +939,8 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
             controller: _remarks,
             maxLines: 4,
             minLines: 2,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.transparent,
-              hintText: 'Enter subject to appointment',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
+            decoration: _getInputDecoration()
+                .copyWith(hintText: 'Please enter your appointment cause .'),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter remarks';
@@ -924,6 +950,24 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
           ),
         ),
       ],
+    );
+  }
+
+  InputDecoration _getInputDecoration() {
+    return InputDecoration(
+      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: Colors.grey.shade300),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: Colors.grey.shade500),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: Config.primarythemeColor),
+      ),
     );
   }
 

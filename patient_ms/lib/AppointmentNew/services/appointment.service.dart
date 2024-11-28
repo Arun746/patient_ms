@@ -13,6 +13,8 @@ abstract class NewAppointmentService {
     bool insurance,
     bool ssf,
     int patientid,
+    int schemeid,
+    int schemeproductid,
   ) async {
     final uri = Uri.parse('$url/api/OnlineAppointmentInsert');
 
@@ -33,7 +35,9 @@ abstract class NewAppointmentService {
       "insurance": insurance,
       "ssf": ssf,
       "patient_id": patientid,
-      "remarks": remarks
+      "remarks": remarks,
+      "scheme_id": schemeid,
+      "scheme_product_id": schemeproductid,
     };
     String jsonBody = json.encode(body);
     final encoding = Encoding.getByName('utf-8');
