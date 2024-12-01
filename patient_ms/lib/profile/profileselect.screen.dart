@@ -73,7 +73,9 @@ class _SelectProfileState extends State<SelectProfile> {
                 Icons.person_add_alt_1,
                 color: Colors.white,
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, "/createprofile");
+              },
             ),
             SizedBox(
               width: screenWidth * 0.04,

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:patient_ms/profile/createprofile.screen.dart';
 import 'package:patient_ms/screen/appointment.screen.dart';
 import 'package:patient_ms/screen/home.screen.dart';
 import 'package:patient_ms/Auth/screen/login.screen.dart';
@@ -38,6 +39,7 @@ class _MyAppState extends State<MyApp> {
         '/Home': (BuildContext context) => const Home(),
         '/SelectUser': (BuildContext context) => const SelectProfile(),
         '/Appointment': (BuildContext context) => const Appointment(),
+        '/createprofile': (context) => CreateProfilePage(),
       },
       debugShowCheckedModeBanner: false,
     );

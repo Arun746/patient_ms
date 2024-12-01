@@ -31,7 +31,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
   String _userId = '';
   bool? eligible;
   String? schemeNameUrl;
-
+  final TextEditingController _time = TextEditingController();
   final TextEditingController _address = TextEditingController();
   final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
@@ -283,6 +283,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
       setState(() {
         _selectedTime =
             '${timePickerResult.hour.toString().padLeft(2, '0')}:${timePickerResult.minute.toString().padLeft(2, '0')} ${timePickerResult.period == DayPeriod.am ? 'AM' : 'PM'}';
+        _time.text = _selectedTime.toString();
       });
     }
   }
@@ -295,11 +296,11 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
         appBar: AppBar(
           backgroundColor: Config.primarythemeColor,
           foregroundColor: Colors.white,
-          title: const Center(
-              child: Text(
+          title: const Text(
             'Appointment Booking ',
             style: TextStyle(color: Colors.white),
-          )),
+          ),
+          centerTitle: true,
         ),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
@@ -457,6 +458,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
                             ),
                             SizedBox(
                               child: TextFormField(
+                                controller: _time,
                                 readOnly: true,
                                 decoration: _getInputDecoration().copyWith(
                                   hintText: 'Select time',
