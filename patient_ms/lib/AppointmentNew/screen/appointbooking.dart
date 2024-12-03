@@ -11,6 +11,7 @@ import 'package:patient_ms/AppointmentNew/services/dateservice.dart';
 import 'package:patient_ms/AppointmentNew/services/department.service.dart';
 import 'package:patient_ms/AppointmentNew/services/insurance.service.dart';
 import 'package:patient_ms/config/config.dart';
+import 'package:patient_ms/esewa/functionality.dart';
 import 'package:patient_ms/profile/profile.model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,6 +32,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
   String _userId = '';
   bool? eligible;
   String? schemeNameUrl;
+  // late Esewa esewa;
   final TextEditingController _time = TextEditingController();
   final TextEditingController _address = TextEditingController();
   final TextEditingController _name = TextEditingController();
@@ -172,6 +174,8 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
       );
 
       if (appointmentsuccess) {
+        Esewa esewa = Esewa(showSnackbar: esewashowSnackbar);
+        esewa.pay();
         context.loaderOverlay.hide();
 
         Navigator.pushNamedAndRemoveUntil(
@@ -215,8 +219,23 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
     }
   }
 
+  void esewashowSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Center(
+          child: Text(message),
+        ),
+        duration: Duration(seconds: 1),
+        backgroundColor: message.toString() == "Payment successful!"
+            ? Colors.green
+            : Colors.red,
+      ),
+    );
+  }
+
   @override
   void initState() {
+    // esewa = Esewa(showSnackbar: esewashowSnackbar);
     _registrationType = 1;
     schemeid = 0;
     schemeproductId = 0;
