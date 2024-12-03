@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -57,6 +58,40 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
   String? _selectedDepart;
   String? _selectedTime;
 
+  @override
+  void initState() {
+    // esewa = Esewa(showSnackbar: esewashowSnackbar);
+    _registrationType = 1;
+    schemeid = 0;
+    schemeproductId = 0;
+    _fetchdepart();
+    _fetchAndStoreData();
+    _loadUserId();
+    getSelectedPatientData().then((data) {
+      setState(() {
+        _bima.text = data['policyid'] ?? '';
+        _address.text = data['address'] ?? '';
+        _name.text = data['fullName'] ?? '';
+        _email.text = data['email'] ?? '';
+        _number.text = data['contactNumber'] ?? '';
+        _dob.text =
+            DateFormat('yyyy-MM-dd').format(DateTime.parse(data['dob'] ?? ''));
+        data['pgender'] == 'male'
+            ? _gender = 1
+            : data['pgender'] == 'female'
+                ? _gender = 2
+                : _gender = 3;
+        patientid = data["patientid"];
+        // if (_bima.text.isNotEmpty) {
+        //   _checkeligiblity();
+        // }
+      });
+    });
+
+    super.initState();
+  }
+
+  //departmentfetch
   Future<void> _fetchdepart() async {
     final data = await DepartmentService.getData();
     setState(() {
@@ -64,6 +99,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
     });
   }
 
+//eligiblitycheck
   Future<void> _checkeligiblity() async {
     try {
       context.loaderOverlay.show();
@@ -116,6 +152,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
     }
   }
 
+//schemaget
   int? schemeid;
   List<SchemeDt> _schemeList = [];
   Future<void> _fetchScheme() async {
@@ -138,6 +175,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
     });
   }
 
+//schemaprodget
   int? schemeproductId;
   Future<void> _fetchSchemeProduct(int? schemeid) async {
     final data =
@@ -148,6 +186,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
     });
   }
 
+// getuserid
   Future<void> _loadUserId() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -174,22 +213,53 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
       );
 
       if (appointmentsuccess) {
-        Esewa esewa = Esewa(showSnackbar: esewashowSnackbar);
-        esewa.pay();
+        print("app success");
         context.loaderOverlay.hide();
+        Esewa esewa = Esewa();
+        String status = await esewa.pay();
 
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/Home', (Route<dynamic> route) => false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Appointment Confirmed ! We will reach to you soon .',
-              textAlign: TextAlign.center,
-            ),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
-          ),
-        );
+        // Show the dialog first
+        if (status == 'success' ||
+            status == 'cancelled' ||
+            status == 'failed') {
+          AwesomeDialog(
+            dialogBackgroundColor: Colors.white,
+            context: context,
+            dialogType: DialogType.warning,
+            animType: AnimType.topSlide,
+            title: "Ohh!",
+            desc: status == 'success'
+                ? 'Appointment Confirmed! We will reach to you soon.'
+                : status == 'cancelled'
+                    ? 'Payment cancelled! We will reach to you soon.'
+                    : 'Failed! We will reach to you soon.',
+            descTextStyle: TextStyle(
+                fontSize: 16 * (screenWidth / 360),
+                color: Config.primarythemeColor),
+            btnOkText: 'Ok',
+            btnOkOnPress: () {
+              Navigator.of(context).pop(); // Close the dialog
+              // Now navigate after the dialog is closed
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/Home', (Route<dynamic> route) => false);
+            },
+          ).show();
+        }
+
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(
+        //     content: Text(
+        //       status == 'success'
+        //           ? 'Appointment Confirmed! We will reach to you soon.'
+        //           : status == 'cancelled'
+        //               ? 'Payment cancelled! We will reach to you soon.'
+        //               : 'Failed! We will reach to you soon.',
+        //       textAlign: TextAlign.center,
+        //     ),
+        //     backgroundColor: Colors.green,
+        //     duration: Duration(seconds: 5),
+        //   ),
+        // );
       } else {
         context.loaderOverlay.hide();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -233,39 +303,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
     );
   }
 
-  @override
-  void initState() {
-    // esewa = Esewa(showSnackbar: esewashowSnackbar);
-    _registrationType = 1;
-    schemeid = 0;
-    schemeproductId = 0;
-    _fetchdepart();
-    _fetchAndStoreData();
-    _loadUserId();
-    getSelectedPatientData().then((data) {
-      setState(() {
-        _bima.text = data['policyid'] ?? '';
-        _address.text = data['address'] ?? '';
-        _name.text = data['fullName'] ?? '';
-        _email.text = data['email'] ?? '';
-        _number.text = data['contactNumber'] ?? '';
-        _dob.text =
-            DateFormat('yyyy-MM-dd').format(DateTime.parse(data['dob'] ?? ''));
-        data['pgender'] == 'male'
-            ? _gender = 1
-            : data['pgender'] == 'female'
-                ? _gender = 2
-                : _gender = 3;
-        patientid = data["patientid"];
-        // if (_bima.text.isNotEmpty) {
-        //   _checkeligiblity();
-        // }
-      });
-    });
-
-    super.initState();
-  }
-
+//patientprofileinfoget
   PatientInfoDt deserializePatient(String json) =>
       PatientInfoDt.fromJson(jsonDecode(json));
 
