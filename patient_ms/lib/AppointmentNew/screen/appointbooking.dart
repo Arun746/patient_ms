@@ -199,7 +199,7 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
     int? dpid = int.tryParse(_selectedDepart ?? '');
     try {
       context.loaderOverlay.show();
-      bool appointmentsuccess = await NewAppointmentService.postAppointment(
+      final appointmentsuccess = await NewAppointmentService.postAppointment(
         _selectedDate!,
         _selectedTime!,
         dpid!,
@@ -212,54 +212,50 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
         schemeproductId!,
       );
 
-      if (appointmentsuccess) {
+      if (appointmentsuccess.isNotEmpty) {
+        String? appointmentId = appointmentsuccess.first.id.toString();
         print("app success");
         context.loaderOverlay.hide();
         Esewa esewa = Esewa();
-        String status = await esewa.pay();
+        Map<String, String> data = await esewa.pay(appointmentId);
 
         // Show the dialog first
-        if (status == 'success' ||
-            status == 'cancelled' ||
-            status == 'failed') {
-          AwesomeDialog(
-            dialogBackgroundColor: Colors.white,
-            context: context,
-            dialogType: DialogType.warning,
-            animType: AnimType.topSlide,
-            title: "Ohh!",
-            desc: status == 'success'
-                ? 'Appointment Confirmed! We will reach to you soon.'
-                : status == 'cancelled'
-                    ? 'Payment cancelled! We will reach to you soon.'
-                    : 'Failed! We will reach to you soon.',
-            descTextStyle: TextStyle(
-                fontSize: 16 * (screenWidth / 360),
-                color: Config.primarythemeColor),
-            btnOkText: 'Ok',
-            btnOkOnPress: () {
-              Navigator.of(context).pop(); // Close the dialog
-              // Now navigate after the dialog is closed
+        print("-----------------------------------------");
+        print(data["refid"]);
+
+        AwesomeDialog(
+          dialogBackgroundColor: Colors.white,
+          context: context,
+          dialogType: data['status'] == 'success'
+              ? DialogType.success
+              : DialogType.error,
+          animType: AnimType.topSlide,
+          title: data['status'] == 'success'
+              ? 'Success'
+              : data['status'] == 'cancelled'
+                  ? 'Cancelled'
+                  : 'Failed',
+          titleTextStyle: TextStyle(
+            fontSize: 16 * (screenWidth / 360),
+            color: data['status'] == 'success' ? Colors.green : Colors.red,
+          ),
+          desc: data['status'] == 'success'
+              ? 'Appointment Confirmed! We will reach to you soon.'
+              : data['status'] == 'cancelled'
+                  ? 'Payment cancelled by the user ! Appointment dismissed .'
+                  : 'Payment Failed ! Please Try again later',
+          descTextStyle: TextStyle(
+              fontSize: 13 * (screenWidth / 360),
+              color: Config.primarythemeColor),
+          btnOkText: 'Ok',
+          btnOkOnPress: () {
+            Navigator.of(context).pop();
+            if (data['status'] == 'success') {
               Navigator.pushNamedAndRemoveUntil(
                   context, '/Home', (Route<dynamic> route) => false);
-            },
-          ).show();
-        }
-
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(
-        //     content: Text(
-        //       status == 'success'
-        //           ? 'Appointment Confirmed! We will reach to you soon.'
-        //           : status == 'cancelled'
-        //               ? 'Payment cancelled! We will reach to you soon.'
-        //               : 'Failed! We will reach to you soon.',
-        //       textAlign: TextAlign.center,
-        //     ),
-        //     backgroundColor: Colors.green,
-        //     duration: Duration(seconds: 5),
-        //   ),
-        // );
+            }
+          },
+        ).show();
       } else {
         context.loaderOverlay.hide();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -275,11 +271,12 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
       }
       context.loaderOverlay.hide();
     } catch (e) {
+      print(e);
       context.loaderOverlay.hide();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            'An error occurred: Check all form field !',
+            'An error occurred: Check all form field ! ',
             textAlign: TextAlign.center,
           ),
           backgroundColor: Colors.red,
@@ -287,20 +284,6 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
         ),
       );
     }
-  }
-
-  void esewashowSnackbar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Center(
-          child: Text(message),
-        ),
-        duration: Duration(seconds: 1),
-        backgroundColor: message.toString() == "Payment successful!"
-            ? Colors.green
-            : Colors.red,
-      ),
-    );
   }
 
 //patientprofileinfoget
@@ -1000,12 +983,12 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
             minLines: 2,
             decoration: _getInputDecoration()
                 .copyWith(hintText: 'Please enter your appointment cause .'),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter remarks';
-              }
-              return null;
-            },
+            // validator: (value) {
+            //   if (value == null || value.isEmpty) {
+            //     return 'Please enter remarks';
+            //   }
+            //   return null;
+            // },
           ),
         ),
       ],

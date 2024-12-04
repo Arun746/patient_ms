@@ -2,9 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:patient_ms/config/config.dart';
 
+import '../model/appointment.model.dart';
+
 abstract class NewAppointmentService {
   static String url = Config.localUrl;
-  static Future<bool> postAppointment(
+
+  static Future<List<AppPostModel>> postAppointment(
     String appointmentdate,
     String appointmenttime,
     int dpid,
@@ -55,10 +58,13 @@ abstract class NewAppointmentService {
 
     int statusCode = postResponse.statusCode;
     if (statusCode == 200) {
-      return true;
+      List<AppPostModel> data = (json.decode(postResponse.body) as List)
+          .map((data) => AppPostModel.fromJson(data))
+          .toList();
+      return data;
     } else {
       // print('Error Response Body: ${postResponse.body}');
-      return false;
+      throw Exception('Failed to post ${postResponse.statusCode}');
     }
   }
 }

@@ -12,12 +12,11 @@ import 'dart:async';
 class Esewa {
   Esewa();
 
-  Future<String> pay() async {
-    Completer<String> completer = Completer<String>(); // Create a Completer
-    String paymentStatus = 'unknown'; // Default status
-
+  Future<Map<String, String>> pay(String appointmentId) async {
+    Completer<Map<String, String>> completer = Completer<Map<String, String>>();
+    String paymentStatus = 'unknown';
+    String refid = '';
     try {
-      // Call initPayment without await
       EsewaFlutterSdk.initPayment(
         esewaConfig: EsewaConfig(
           environment: Environment.test,
@@ -25,7 +24,7 @@ class Esewa {
           secretId: kEsewaSecretKey,
         ),
         esewaPayment: EsewaPayment(
-          productId: "1d71jd81",
+          productId: appointmentId,
           productName: "Product One",
           productPrice: "2",
           callbackUrl: '',
@@ -33,26 +32,26 @@ class Esewa {
         onPaymentSuccess: (EsewaPaymentSuccessResult result) {
           debugPrint('SUCCESS');
           paymentStatus = 'success';
-          completer.complete(paymentStatus);
+          refid = result.refId.toString();
+          completer.complete({'status': paymentStatus, 'refid': refid});
           verify(result);
         },
         onPaymentFailure: (result) {
           debugPrint('FAILURE');
           paymentStatus = 'failed';
-          completer.complete(paymentStatus);
+          completer.complete({'status': paymentStatus, 'refid': refid});
         },
         onPaymentCancellation: (result) {
           debugPrint('CANCEL');
           paymentStatus = 'cancelled';
-          completer.complete(paymentStatus);
+          completer.complete({'status': paymentStatus, 'refid': refid});
         },
       );
     } catch (e) {
       debugPrint('EXCEPTION');
       paymentStatus = '$e';
-      completer.complete(paymentStatus);
+      completer.complete({'status': paymentStatus, 'refid': refid});
     }
-
     return completer.future;
   }
 
