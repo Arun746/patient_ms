@@ -45,12 +45,9 @@ class _SelectProfileState extends State<SelectProfile> {
   }
 
   Future<void> saveSelectedPatient(PatientInfoDt filteredData) async {
-    // print('Saving patient data:');
-    // print('Policy ID: ${filteredData.policyid}');
-    // print('Full data: ${filteredData.toJson()}');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String serializedPatient = serializePatient(filteredData);
-    // print('Serialized data: $serializedPatient');
+
     await prefs.setString('selected_patient_data', serializedPatient);
   }
 

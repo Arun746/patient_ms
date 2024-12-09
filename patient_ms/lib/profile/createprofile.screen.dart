@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:patient_ms/AppointmentNew/services/insurance.service.dart';
 import 'package:patient_ms/config/config.dart';
 import 'package:patient_ms/profile/profile.service.dart';
 
@@ -20,11 +22,48 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
   final TextEditingController _dob = TextEditingController();
 
   int? _gender;
-
+  int? _fieldstatus;
   @override
   void initState() {
     super.initState();
     _gender = 1;
+    _fieldstatus = 0;
+  }
+
+//postbima
+  Future<void> bima() async {
+    try {
+      final insuranceService = InsuranceService();
+      final bimaDetails = await insuranceService.fetchBimaDetails(
+        _bimaNo.text.toString(),
+      );
+
+      setState(() {
+        _fieldstatus = 1;
+        _name.text = "${bimaDetails.first.given} ${bimaDetails.first.family}";
+        _address.text = bimaDetails.first.address.toString();
+        _email.text = bimaDetails.first.email.toString();
+        _contactNo.text = bimaDetails.first.telephone.toString();
+        _dob.text = bimaDetails.first.birthdate.toString();
+        _gender = bimaDetails.first.gender == "male"
+            ? 1
+            : bimaDetails.first.gender == "female"
+                ? 2
+                : 3;
+      });
+    } catch (e) {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            e.toString(),
+            style: const TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
   }
 
   InputDecoration _getInputDecoration() {
@@ -154,17 +193,26 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                         height: screenHeight * 0.075,
                         child: TextFormField(
                           controller: _bimaNo,
+                          readOnly: _fieldstatus == 1 ? true : false,
                           keyboardType: TextInputType.phone,
-                          decoration: _getInputDecoration().copyWith(
-                              // filled: true,
-                              // fillColor: Color.fromARGB(255, 231, 240, 242),
-                              ),
-                          // validator: (value) {
-                          //   if (value == null || value.isEmpty) {
-                          //     return 'Please enter Bima No';
-                          //   }
-                          //   return null;
-                          // },
+                          decoration: _getInputDecoration().copyWith(),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: screenHeight * 0.08,
+                      child: InkWell(
+                        onTap: () async {
+                          bima();
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: screenHeight * 0.01,
+                              horizontal: screenWidth * 0.04),
+                          child: Icon(
+                            color: Config.primarythemeColor,
+                            Icons.post_add,
+                          ),
                         ),
                       ),
                     ),
@@ -181,7 +229,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                         style: TextStyle(
                           fontSize: 14 * (screenWidth / 360),
                           fontWeight: FontWeight.w500,
-                          color: Colors.black, // or your default text color
+                          color: Colors.black,
                         ),
                       ),
                       TextSpan(
@@ -200,6 +248,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                   height: screenHeight * 0.075,
                   child: TextFormField(
                     controller: _name,
+                    readOnly: _fieldstatus == 1 ? true : false,
                     decoration: _getInputDecoration().copyWith(
                         // filled: true,
                         // fillColor: Color.fromARGB(255, 231, 240, 242),
@@ -241,6 +290,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                 SizedBox(
                   height: screenHeight * 0.075,
                   child: TextFormField(
+                    readOnly: _fieldstatus == 1 ? true : false,
                     controller: _address,
                     decoration: _getInputDecoration().copyWith(
                         // filled: true,
@@ -283,6 +333,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                 SizedBox(
                   height: screenHeight * 0.075,
                   child: TextFormField(
+                    readOnly: _fieldstatus == 1 ? true : false,
                     controller: _email,
                     keyboardType: TextInputType.emailAddress,
                     decoration: _getInputDecoration().copyWith(
@@ -330,6 +381,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                 SizedBox(
                   height: screenHeight * 0.075,
                   child: TextFormField(
+                    readOnly: _fieldstatus == 1 ? true : false,
                     controller: _contactNo,
                     keyboardType: TextInputType.phone,
                     decoration: _getInputDecoration().copyWith(
@@ -375,28 +427,31 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                   child: TextFormField(
                     controller: _dob,
                     readOnly: true,
-                    decoration: _getInputDecoration().copyWith(
-                      // filled: true,
-                      // fillColor: Color.fromARGB(255, 231, 240, 242),
-                      suffixIcon: Icon(Icons.calendar_today),
-                    ),
-                    onTap: () async {
-                      DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime.now(),
-                      );
-                      if (pickedDate != null) {
-                        _dob.text = "${pickedDate.toLocal()}".split(' ')[0];
-                      }
-                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please select date of birth';
                       }
                       return null;
                     },
+                    decoration: _getInputDecoration().copyWith(
+                      suffixIcon: _fieldstatus == 1
+                          ? Container()
+                          : InkWell(
+                              onTap: () async {
+                                DateTime? pickedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1900),
+                                  lastDate: DateTime.now(),
+                                );
+                                if (pickedDate != null) {
+                                  _dob.text =
+                                      "${pickedDate.toLocal()}".split(' ')[0];
+                                }
+                              },
+                              child: const Icon(Icons.calendar_today),
+                            ),
+                    ),
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.01),
@@ -430,9 +485,11 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                       value: 1,
                       groupValue: _gender,
                       onChanged: (int? value) {
-                        setState(() {
-                          _gender = value;
-                        });
+                        _fieldstatus == 0
+                            ? setState(() {
+                                _gender = value;
+                              })
+                            : "";
                       },
                     ),
                     Text(
@@ -447,9 +504,11 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                       value: 2,
                       groupValue: _gender,
                       onChanged: (int? value) {
-                        setState(() {
-                          _gender = value;
-                        });
+                        _fieldstatus == 0
+                            ? setState(() {
+                                _gender = value;
+                              })
+                            : "";
                       },
                     ),
                     Text(
@@ -464,9 +523,11 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                       value: 3,
                       groupValue: _gender,
                       onChanged: (int? value) {
-                        setState(() {
-                          _gender = value;
-                        });
+                        _fieldstatus == 0
+                            ? setState(() {
+                                _gender = value;
+                              })
+                            : "";
                       },
                     ),
                     Text(
@@ -487,8 +548,12 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                   height: screenHeight * 0.06,
                   child: ElevatedButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
+                      if (_fieldstatus == 1) {
                         postProfile();
+                      } else {
+                        if (_formKey.currentState!.validate()) {
+                          postProfile();
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(

@@ -1,3 +1,4 @@
+//this model is used to for the response data recived from appointment post
 class AppPostModel {
   String? ddate;
   String? appointmentDate;

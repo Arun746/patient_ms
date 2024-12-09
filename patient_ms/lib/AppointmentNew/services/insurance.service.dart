@@ -1,6 +1,9 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:patient_ms/AppointmentNew/model/bimadetails.model.dart';
 import 'package:patient_ms/AppointmentNew/model/schemeproduct.model.dart';
 import 'package:patient_ms/config/config.dart';
 
@@ -8,6 +11,26 @@ import '../model/scheme.model.dart';
 
 class InsuranceService {
   static String Url = Config.baseUrl2;
+  Future<List<BimaDetailsDt>> fetchBimaDetails(String bimaid) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$Url/api/PatientsHIB?patientid=$bimaid'),
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonData = json.decode(response.body);
+        return [BimaDetailsDt.fromJson(jsonData.cast<String, dynamic>())];
+      } else if (response.statusCode == 400) {
+        throw Exception('Empty Bima No');
+      } else if (response.statusCode == 500) {
+        throw Exception('Invalid Bima No');
+      } else {
+        throw Exception('Unexpected error: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 
   static Future<Map<String, dynamic>> getEligibility(
       String bimano, String userId) async {
@@ -90,3 +113,6 @@ class InsuranceService {
     }
   }
 }
+
+
+// api/PatientsHIB?patientid=074091986
