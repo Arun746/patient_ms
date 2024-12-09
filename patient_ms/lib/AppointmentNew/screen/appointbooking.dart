@@ -60,7 +60,6 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
 
   @override
   void initState() {
-    // esewa = Esewa(showSnackbar: esewashowSnackbar);
     _registrationType = 1;
     schemeid = 0;
     schemeproductId = 0;
@@ -214,48 +213,13 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
 
       if (appointmentsuccess.isNotEmpty) {
         String? appointmentId = appointmentsuccess.first.id.toString();
-        print("app success");
+
         context.loaderOverlay.hide();
         Esewa esewa = Esewa();
         Map<String, String> data = await esewa.pay(appointmentId);
 
-        // Show the dialog first
-        print("-----------------------------------------");
-        print(data["refid"]);
-
-        AwesomeDialog(
-          dialogBackgroundColor: Colors.white,
-          context: context,
-          dialogType: data['status'] == 'success'
-              ? DialogType.success
-              : DialogType.error,
-          animType: AnimType.topSlide,
-          title: data['status'] == 'success'
-              ? 'Success'
-              : data['status'] == 'cancelled'
-                  ? 'Cancelled'
-                  : 'Failed',
-          titleTextStyle: TextStyle(
-            fontSize: 16 * (screenWidth / 360),
-            color: data['status'] == 'success' ? Colors.green : Colors.red,
-          ),
-          desc: data['status'] == 'success'
-              ? 'Appointment Confirmed! We will reach to you soon.'
-              : data['status'] == 'cancelled'
-                  ? 'Payment cancelled by the user ! Appointment dismissed .'
-                  : 'Payment Failed ! Please Try again later',
-          descTextStyle: TextStyle(
-              fontSize: 13 * (screenWidth / 360),
-              color: Config.primarythemeColor),
-          btnOkText: 'Ok',
-          btnOkOnPress: () {
-            Navigator.of(context).pop();
-            if (data['status'] == 'success') {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, '/Home', (Route<dynamic> route) => false);
-            }
-          },
-        ).show();
+        // Show the dialog
+        _awesomeDialog(data['status'].toString()).show();
       } else {
         context.loaderOverlay.hide();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -1010,6 +974,38 @@ class _AppointmentBookingPageState extends State<AppointmentBookingPage> {
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(color: Config.primarythemeColor),
       ),
+    );
+  }
+
+  AwesomeDialog _awesomeDialog(String status) {
+    return AwesomeDialog(
+      dialogBackgroundColor: Colors.white,
+      context: context,
+      dialogType: status == 'success' ? DialogType.success : DialogType.error,
+      animType: AnimType.topSlide,
+      title: status == 'success'
+          ? 'Success'
+          : status == 'cancelled'
+              ? 'Cancelled'
+              : 'Failed',
+      titleTextStyle: TextStyle(
+        fontSize: 16 * (screenWidth / 360),
+        color: status == 'success' ? Colors.green : Colors.red,
+      ),
+      desc: status == 'success'
+          ? 'Appointment Confirmed! We will reach to you soon.'
+          : status == 'cancelled'
+              ? 'Payment cancelled by the user ! Appointment dismissed .'
+              : 'Payment Failed ! Please Try again later',
+      descTextStyle: TextStyle(
+          fontSize: 13 * (screenWidth / 360), color: Config.primarythemeColor),
+      btnOkText: 'Ok',
+      btnOkOnPress: () {
+        Navigator.of(context).pop();
+
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/Home', (Route<dynamic> route) => false);
+      },
     );
   }
 

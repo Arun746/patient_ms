@@ -7,7 +7,7 @@ import 'package:patient_ms/profile/profile.model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileService {
-  static String Url = Config.localUrl;
+  static String Url = Config.baseUrl2;
 
   static Future<List<PatientInfoDt>> getData(userId) async {
     String apiURL = "$Url/api/PatientInfoSelect?userid=$userId";

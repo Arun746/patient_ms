@@ -75,7 +75,7 @@ class AuthService {
         // Parse the JWT token
         Map<String, dynamic> payload = Jwt.parseJwt(token);
         String userId = payload['sub'];
-
+        print(userId);
         // Store the user ID in shared preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('userid', userId.toString());

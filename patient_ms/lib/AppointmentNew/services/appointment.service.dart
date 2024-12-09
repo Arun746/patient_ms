@@ -5,7 +5,7 @@ import 'package:patient_ms/config/config.dart';
 import '../model/appointment.model.dart';
 
 abstract class NewAppointmentService {
-  static String url = Config.localUrl;
+  static String url = Config.baseUrl2;
 
   static Future<List<AppPostModel>> postAppointment(
     String appointmentdate,
