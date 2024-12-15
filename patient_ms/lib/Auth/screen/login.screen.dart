@@ -132,11 +132,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   Padding(
                     padding: EdgeInsets.only(
                       top: screenHeight * 0.03,
-                      left: screenWidth * 0.1,
                     ),
                     child: SizedBox(
-                      height: 0.1 * screenHeight,
-                      child: Image.asset('images/norvichospital.png'),
+                      height: 0.25 * screenHeight,
+                      child: Image.asset('images/logo.png'),
                     ),
                   ),
                   //welcome txt

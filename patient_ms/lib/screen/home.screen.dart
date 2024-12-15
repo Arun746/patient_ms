@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, deprecated_member_use
 
+import 'dart:convert';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +10,9 @@ import 'package:patient_ms/AppointmentNew/screen/appointbooking.dart';
 import 'package:patient_ms/Auth/screen/login.screen.dart';
 import 'package:patient_ms/Auth/services/authservice.dart';
 import 'package:patient_ms/config/config.dart';
+import 'package:patient_ms/profile/profile.model.dart';
 import 'package:patient_ms/screen/hospital.screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -20,6 +24,43 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
+
+  String? profileName;
+  int? patientid;
+  @override
+  void initState() {
+    super.initState();
+    getSelectedPatientData().then((data) {
+      setState(() {
+        profileName = data['fullName'] ?? '';
+        patientid = data['patientid'] ?? '';
+      });
+    });
+  }
+
+//fetch profile details
+//patientprofileinfoget
+  PatientInfoDt deserializePatient(String json) =>
+      PatientInfoDt.fromJson(jsonDecode(json));
+
+  Future<Map<String, dynamic>> getSelectedPatientData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? serializedPatient = prefs.getString('selected_patient_data');
+    if (serializedPatient != null) {
+      PatientInfoDt patient = deserializePatient(serializedPatient);
+      return {
+        'fullName': patient.pname,
+        'email': patient.email,
+        'address': patient.address,
+        'contactNumber': patient.telephone,
+        'dob': patient.dob,
+        'pgender': patient.gender,
+        'policyid': patient.policyid,
+        'patientid': patient.id,
+      };
+    }
+    return {};
+  }
 
   int _selectedIndex = 0;
 
@@ -81,7 +122,7 @@ class _HomeState extends State<Home> {
                 children: [
                   Expanded(
                     child: SizedBox(
-                      width: screenWidth * 0.3,
+                      height: screenHeight * 0.15,
                       child: Image.asset('images/profile.png'),
                     ),
                   ),
@@ -89,11 +130,11 @@ class _HomeState extends State<Home> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'User Profile Name',
+                        profileName.toString(),
                         style: TextStyle(fontSize: 18 * (screenWidth / 360)),
                       ),
                       Text(
-                        '#7267147',
+                        "# ${patientid.toString()}",
                         style: TextStyle(fontSize: 15 * (screenWidth / 360)),
                       ),
                     ],
